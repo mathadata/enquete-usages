@@ -59,4 +59,4 @@ run transverse/build_flux_dashboard.py
 
 echo "═══ 5. CONTRATS (garde-fou — échoue si incohérence) ═══"
 python3 "$E/transverse/check_contracts.py"
-echo "✓ rebuild_all terminé. Pense à republier (publish_pages.sh + artefacts) si des dashboards ont changé."
+echo "✓ rebuild_all terminé. Pense à republier avec publish_pages.sh si des dashboards ont changé."

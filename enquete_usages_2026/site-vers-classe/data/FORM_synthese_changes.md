@@ -56,4 +56,4 @@ Les nouvelles collections de formation (`formation-codes` 45 sessions, `formatio
 - **Petits effectifs partout sur le fin.** Intention : 29 déclarants, 3 réalisateurs. Pré-service productif : 2/2. Maturité par cohorte : 5 à 12 cohortes ≥ 5 profs-UAI. Les chiffres « maturité ≥60 j 23,0 % / <60 j 34,5 % » ne se reproduisent pas exactement (recalcul : 19,9 % / 29,5 %) — **conclusion qualitative valide, pourcentages à ne pas sur-interpréter**.
 - **Endogénéité non éliminée.** 9/26 succès présentiels précèdent la formation : la causalité du présentiel reste non établie.
 
-Fichier également écrit : `/private/tmp/claude-502/-Users-akim-Documents-MathAData-Git-mathadata-dashboard-next/49f4f306-c2bb-43a0-af8f-f1b5ce99e908/scratchpad/volet2_v2_integration.md`
+Fichier de travail historique également écrit dans le scratchpad local : `volet2_v2_integration.md`.

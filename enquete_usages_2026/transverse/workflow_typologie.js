@@ -8,8 +8,8 @@ export const meta = {
   ],
 }
 
-const ROOT = '/Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/enquete_usages_2026'
-const SP = '/private/tmp/claude-502/-Users-akim-Documents-MathAData-Git-mathadata-dashboard-next/49f4f306-c2bb-43a0-af8f-f1b5ce99e908/scratchpad'
+const ROOT = process.env.MATHADATA_ENQUETE_ROOT || `${process.cwd()}/enquete_usages_2026`
+const SP = process.env.MATHADATA_LOCAL || `${ROOT}/_local`
 
 const DICT = `
 SHARED DATA (run python3/pandas; you may write scratch scripts under ${SP}):

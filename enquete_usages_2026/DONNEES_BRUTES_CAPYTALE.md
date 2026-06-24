@@ -40,8 +40,8 @@ Payload pour la régénérer.
 - **Endpoint** : `https://capytale2.ac-paris.fr/web/c-stat/mathadata` (override possible par la variable
   d'environnement `CAPYTALE_MATHADATA_URL`).
 - **Authentification** : en-tête `Authorization: Bearer <token>`, `Accept: text/csv`.
-- La **même logique** alimente l'app Next.js du dashboard ([`app/api/csv/route.ts`](../app/api/csv/route.ts),
-  bouton « synchroniser Capytale ») — c'est la source de vérité de l'appel.
+- Le script [`fetch_capytale.py`](fetch_capytale.py) porte la logique de récupération et de
+  normalisation utilisée par ce dépôt.
 
 ### Le token API (à faire une fois)
 

@@ -8,13 +8,18 @@ export const meta = {
   ],
 }
 
+const REPO = process.env.MATHADATA_REPO_ROOT || process.cwd()
+const ROOT = `${REPO}/enquete_usages_2026`
+const SNAP = process.env.MATHADATA_SNAPSHOT || `${REPO}/../mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z`
+const LOCAL = process.env.MATHADATA_LOCAL || `${ROOT}/_local`
+
 const CTX = `
 # CONTEXTE — VOLET 2, intégration des DONNÉES DE FORMATION (mathadata.fr × Capytale)
 
 On a déjà produit le Volet 2 (croisement site nominatif × Capytale anonyme). De NOUVELLES collections de formation viennent d'arriver et permettent de PRÉCISER, voire corriger, des conclusions.
 
 ## Nouvelles données (snapshot Payload, PII, gitignore)
-/Users/akim/Documents/MathAData_Git/mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z/
+${SNAP}/
 - formation-codes.json (45) : 1 ligne = 1 session de formation. Champs : id, label (nom réel, ex "202410_LILLE", "ENS_25", "Web Basque 27 nov 2025", "MEEF INSPÉ Paris"), typeFormation (presentiel|webdecouv|webinaire), formationDate (vraie date ; 2 codes placeholder ont la date bidon 1984-01-01 = "anciens formés avant 15/01/26"), disabled, participants[], participantsCount.
 - formation-redemptions.json (239) : validations. user, code (->formation-codes.id), formationDate, intention.modules (modules déclarés), createdAt. Couvre surtout 2026.
 - modules.json (7) : id->nom. Mapping module payload -> activité Capytale (mathadata_id) : 1=Stat(3518185), 2=Équation réduite(3515488), 3=Repère/milieu/distance(6659633), 4=Stat fœtus(6944347), 5=1ère produit scalaire(5862412), 6=2nde vecteur directeur(8790616), 7=Intro IA(2548348).
@@ -32,8 +37,8 @@ Le typage formation est désormais REEL via formation-codes (champ users.trained
 - Endogénéité présentiel (vraies dates) : ~9 établissements utilisaient Capytale AVANT la formation ; délai formation->1re séance médian 27 j (p25 12, p75 71).
 - Intention déclarée (redemption) vs usage : 99 déclarations de modules, 6 réalisées (même activité dans l'étab).
 - Cohortes 0% usage repérées : pré-service STRICT = MEEF INSPÉ Paris (13, 0%, stagiaires sans établissement, ne peuvent structurellement pas montrer d'usage classe). ATTENTION : ENS_25 (52 profs, 0% usage, ~aucun UAI) n'est PAS pré-service strict — ce sont des **profs en exercice** (formation ouverte non ciblée, "ratée") → classée académique-de-masse, pas pré-service. Toutes deux diluent le présentiel mais pour des raisons différentes.
-- Fichiers : enquete_usages_2026/site-vers-classe/data/facts_formation.json, cohorts.csv, facts_cross.json (formation_effect mis à jour), et table de travail /private/tmp/claude-502/-Users-akim-Documents-MathAData-Git-mathadata-dashboard-next/49f4f306-c2bb-43a0-af8f-f1b5ce99e908/scratchpad/payload_users_work.csv (colonne fcat).
-- Capytale : public/data/capytale_fresh_20260619.csv (role=student=vrais élèves ; uai_el=étab ; created=epoch s). Démo c81e728d exclue, hub Haubourdin cfcd2084 isolé.
+- Fichiers : ${ROOT}/site-vers-classe/data/facts_formation.json, cohorts.csv, facts_cross.json (formation_effect mis à jour), et table de travail ${LOCAL}/payload_users_work.csv (colonne fcat).
+- Capytale : ${REPO}/public/data/capytale_fresh_20260619.csv (role=student=vrais élèves ; uai_el=étab ; created=epoch s). Démo c81e728d exclue, hub Haubourdin cfcd2084 isolé.
 
 ## MÉTHODO & SÉCURITÉ
 Lire la PII pour calculer, mais AUCUN nom/prénom/email en sortie (pseudonymes, commune, établissement OK). Écrire les scripts dans le scratchpad avec un préfixe unique. Grounder chaque chiffre. Français, sobre, factuel.

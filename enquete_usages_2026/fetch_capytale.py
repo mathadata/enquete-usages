@@ -2,8 +2,8 @@
 """Récupère l'extraction d'usage Capytale via l'API Capytale et écrit un CSV daté,
 prêt à devenir l'entrée de référence de l'enquête (`public/data/capytale_fresh_AAAAMMJJ.csv`).
 
-C'est l'équivalent CLI de la logique embarquée dans l'app Next.js (`app/api/csv/route.ts`,
-source de vérité de l'appel API). La donnée renvoyée est déjà **pseudonymisée** (aucune PII).
+Ce script est la source de vérité de la récupération Capytale pour le dépôt d'analyse.
+La donnée renvoyée est déjà **pseudonymisée** (aucune PII).
 
 PRÉREQUIS — le token API :
   - Il se nomme CAPYTALE_MATHADATA_TOKEN et se met dans le fichier `.env.local` à la RACINE du dépôt.

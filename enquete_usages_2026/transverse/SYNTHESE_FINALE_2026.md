@@ -190,4 +190,4 @@ La **phase 1** est gagnée : prouver que MathAData s'utilise en vraie classe, et
 - **Une « séance »** est un cluster reconstruit (médiane ~7 min) ; le **hub fondateur** (compte « 0 », 404 élèves sur 14 établissements) est isolé, jamais lu comme un prof local.
 - Petits effectifs (vrais demi-groupes n≈10, formation établissement-ciblée n=22 établissements) : **ordres de grandeur**, directions robustes.
 
-**Documents sources** : [Volet 1](../usage-capytale/RAPPORT_ENQUETE_USAGES.md) · [Volet 2](../site-vers-classe/RAPPORT_VOLET2.md) · [Typologie](TYPOLOGIE_PROFILS_2026.md) · [Séances](RAPPORT_SEANCES_2026.md). Pages web : [accueil](https://akimx98.github.io/mathadata-dashboard-next/). Faits : `transverse/data/`, `usage-capytale/data/`, `site-vers-classe/data/` (pseudonymisés, PII-free).
+**Documents sources** : [Volet 1](../usage-capytale/RAPPORT_ENQUETE_USAGES.md) · [Volet 2](../site-vers-classe/RAPPORT_VOLET2.md) · [Typologie](TYPOLOGIE_PROFILS_2026.md) · [Séances](RAPPORT_SEANCES_2026.md). Pages web : [accueil](https://mathadata.github.io/enquete-usages/). Faits : `transverse/data/`, `usage-capytale/data/`, `site-vers-classe/data/` (pseudonymisés, PII-free).

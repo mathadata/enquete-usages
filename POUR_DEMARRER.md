@@ -18,8 +18,8 @@ La mise à jour complète des sources et des chiffres est une opération distinc
 Configurer le repo :
 
 ```bash
-cd mathadata-dashboard-next
-python3 -m pip install pandas numpy
+cd enquete-usages
+python3 -m pip install -r requirements.txt
 git config core.hooksPath enquete_usages_2026/hooks
 ```
 
@@ -73,7 +73,7 @@ Les deux dépôts doivent être voisins :
 
 ```text
 MathAData_Git/
-├── mathadata-dashboard-next/
+├── enquete-usages/
 └── mathadata-website/
 ```
 
@@ -103,7 +103,7 @@ mathadata-website/private/payload-snapshots/<timestamp>/
 Revenir dans le dépôt d'analyse :
 
 ```bash
-cd ../mathadata-dashboard-next
+cd ../enquete-usages
 
 export MATHADATA_SNAPSHOT="$(
   ls -dt ../mathadata-website/private/payload-snapshots/* | head -1

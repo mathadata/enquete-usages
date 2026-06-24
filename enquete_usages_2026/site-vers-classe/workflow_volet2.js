@@ -8,6 +8,11 @@ export const meta = {
   ],
 }
 
+const REPO = process.env.MATHADATA_REPO_ROOT || process.cwd()
+const ROOT = `${REPO}/enquete_usages_2026`
+const SNAP = process.env.MATHADATA_SNAPSHOT || `${REPO}/../mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z`
+const LOCAL = process.env.MATHADATA_LOCAL || `${ROOT}/_local`
+
 const SHARED = `
 # CONTEXTE — Enquete VOLET 2 : du site a la classe (mathadata.fr x Capytale)
 
@@ -19,12 +24,12 @@ Objectif global : reconstituer le PIPELINE COMPLET d'un prof :
 Questions transverses : patterns temporels, geographiques, typologies de profs et d'usage, et surtout EFFET DES FORMATIONS sur l'usage (distinguer par type : presentiel vs webinaire).
 
 ## DEUX SOURCES
-1) Capytale (USAGE, ANONYME). CSV : /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/public/data/capytale_fresh_20260619.csv
+1) Capytale (USAGE, ANONYME). CSV : ${REPO}/public/data/capytale_fresh_20260619.csv
    Colonnes : assignment_id,created,changed,assignment_title,student,role,uai_el,activity_id,teacher,uai_teach,mathadata_id,mathadata_title
    - created = epoch SECONDES UTC. role = TYPE de compte (teacher/student), PAS la position. Un prof EN FORMATION reste role=teacher : son id va dans la colonne 'student' (clone-owner), son etab dans uai_el, le formateur dans 'teacher'.
    - role=student = VRAIS eleves (~5854, non contamines). teacher 'c81e728d...' = DEMO a EXCLURE. 'cfcd2084...' (MD5 "0") = HUB FONDATEUR (Haubourdin), pas un prof local.
    - mathadata_id = activite-maitre (ce qui est clone). Labels : 3518185=Stat classification (vitrine, seule accessible sans compte), 2548348=Intro a l'IA (ANCIENNE activite, PAS sur le site, trouvable seulement via Capytale), 3515488=Equation reduite (tres utilisee en FORMATION de profs), 6944347=Stat sante foetus, 6659633=Geometrie reperee, 5862412=Droite produit scalaire, 8790616=Eq cartesienne/vecteur, 5909323=Challenge IA, 3534169=Challenge BTS/NSI.
-2) mathadata.fr (payload, NOMINATIF, PII). Snapshot : /Users/akim/Documents/MathAData_Git/mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z/
+2) mathadata.fr (payload, NOMINATIF, PII). Snapshot : ${SNAP}/
    Fichiers : users.json (2724), sessions.json (25908), events.json (24683), consultation_rss.json (13197). README.md = dictionnaire complet.
    - users : statut (nouveau/forme/mentor), trainedTypeFormation ('presentiel'=en etab / 'webdecouv'=webinaire), trainedDateFormation (date de la formation ; SENTINELLE BIDON '1984-01-01T12:00:00Z' = manquante, 149 cas webdecouv), createdAt, uai, academie, lycee_ville, hors_lycee, newsletter, newsletter_only, last_login, exclude_from_analytics (9 comptes a EXCLURE), roles (formateur/ambassadeur/...), usageIntention/formationIntention.
    - consultation_rss : clic ressource. file 'capytale2.ac-paris.fr/web/b/<id>' => <id> == mathadata_id Capytale. C'EST LE PONT entre les deux mondes (user nominatif -> activite Capytale, date).
@@ -35,9 +40,9 @@ Questions transverses : patterns temporels, geographiques, typologies de profs e
 Aucun identifiant commun : comptes Capytale = ENT anonymes. L'appariement individuel est INFERE (UAI+activite+timing) et partiel. Privilegier le grain ETABLISSEMENT (UAI) et COHORTE de formation, robustes. L'individuel est un bonus a confiance signalee.
 
 ## SOURCE DE VERITE (chiffres deja calcules — NE PAS contredire sans preuve ; si ton recalcul diverge, SIGNALE-le)
-- Croisement : /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/enquete_usages_2026/site-vers-classe/data/facts_cross.json
+- Croisement : ${ROOT}/site-vers-classe/data/facts_cross.json
 - Tables : site-vers-classe/data/capytale_by_uai_teach.csv, capytale_by_uai_el.csv, presentiel_etabs.csv, match_candidates.csv (pseudonymise), match_validation.json
-- Table de travail users (PII-free, id payload + activite, SANS nom/email) : /private/tmp/claude-502/-Users-akim-Documents-MathAData-Git-mathadata-dashboard-next/49f4f306-c2bb-43a0-af8f-f1b5ce99e908/scratchpad/payload_users_work.csv
+- Table de travail users (PII-free, id payload + activite, SANS nom/email) : ${LOCAL}/payload_users_work.csv
 - Volet 1 (Capytale seul, deja produit) : enquete_usages_2026/usage-capytale/data/facts.json (overview/growth/...) et facts_teachers.json (401 engages -> 224 enseignants -> 177 testeurs, +105% eleves, 5854 eleves, IPS, geo).
 
 ## METHODO & SECURITE (IMPERATIF)

@@ -9,14 +9,14 @@ Ce guide couvre les deux entrées brutes :
 
 - accès au dépôt privé `mathadata/mathadata-website` ;
 - compte administrateur Payload sur `https://mathadata.fr` ;
-- clone de `mathadata-dashboard-next` et clone de `mathadata-website` disponibles localement ;
+- clone de `enquete-usages` et clone de `mathadata-website` disponibles localement ;
 - Node.js pour le snapshot Payload, Python 3 pour les analyses.
 
 Les exemples supposent que les deux dépôts sont voisins :
 
 ```text
 MathAData_Git/
-├── mathadata-dashboard-next/
+├── enquete-usages/
 └── mathadata-website/
 ```
 
@@ -89,7 +89,7 @@ ponctuels, pas à une reconstruction exhaustive.
 
 ## 2. Lancer les analyses avec ce snapshot
 
-Depuis `mathadata-dashboard-next` :
+Depuis `enquete-usages` :
 
 ```bash
 SNAPSHOT="/chemin/vers/mathadata-website/private/payload-snapshots/<timestamp>"
@@ -113,7 +113,7 @@ Le pipeline écrit ses tables de travail locales dans `enquete_usages_2026/_loca
 Le snapshot contient notamment noms, prénoms, e-mails, établissement et textes libres.
 Il est ignoré par Git et ne doit être :
 
-- ni committé dans `mathadata-dashboard-next`, qui est public ;
+- ni committé dans `enquete-usages`, qui est public ;
 - ni committé dans `mathadata-website`, même si ce dépôt est privé ;
 - ni copié dans une page publiée ou une pièce jointe non contrôlée.
 

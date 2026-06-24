@@ -1,11 +1,8 @@
-# CLAUDE.md — repo mathadata-dashboard-next
+# CLAUDE.md — dépôt `mathadata/enquete-usages`
 
-Deux choses vivent ici :
-1. **L'application** dashboard Next.js (tableau de bord interactif, déployé sur Vercel).
-2. **L'enquête usages MathAData** (`enquete_usages_2026/`) — analyses de données d'usage. **C'est
-   l'objet de l'essentiel du travail récent.** Tout ce qui suit la concerne.
-
----
+Ce dépôt public contient les enquêtes reproductibles sur les usages MathAData, leurs données
+pseudonymisées, rapports et pages publiées. L'application interactive Next.js vit séparément dans
+`akimx98/mathadata-dashboard-next`.
 
 # Enquête usages — playbook d'exploration des données
 
@@ -181,7 +178,7 @@ Quand on te pose une question sur les données, **dans l'ordre** :
    divergences. Précise « usage-classe ≥5 » vs « séance riche ≥10 », « an-1 seulement », « cohorte
    éligible n=77 », etc.
 6. **Ne change un chiffre publié que via la source** (rapport `.md` / dashboard `.html` du repo),
-   puis régénère gh-pages + artefact (§6). Jamais d'édition directe d'une copie publiée.
+   puis régénère `gh-pages` (§6). Jamais d'édition directe d'une copie publiée.
 7. **Garde-fous** : population = exclure démo (MD5 "2") et isoler le hub fondateur (MD5 "0") ;
    profs = `distinct(teacher)` sur lignes `role=student` ; tout lien site↔Capytale est **estimé**.
 8. **Forme de réponse** : `Interprétation` → `Résultat` → `Base et méthode` → `Limites`. Pour une

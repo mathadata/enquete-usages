@@ -7,11 +7,14 @@ export const meta = {
   ],
 }
 
+const REPO = process.env.MATHADATA_REPO_ROOT || process.cwd()
+const ROOT = `${REPO}/enquete_usages_2026`
+
 const DEFS = `
-DÉFINITIONS CANONIQUES (à respecter STRICTEMENT) — voir aussi /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/enquete_usages_2026/DEFINITIONS.md
-- CSV BRUT: /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/public/data/capytale_fresh_20260619.csv (cols: assignment_id,created,changed,assignment_title,student,role,uai_el,activity_id,teacher,uai_teach,mathadata_id,mathadata_title ; created/changed = epoch secondes UTC -> convertir Europe/Paris).
-- ANNUAIRE: /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/public/data/annuaire_etablissements.csv (uai,nom,type_etablissement[college|lycee],commune,academie,departement,secteur[Public|Privé],ips,latitude,longitude).
-- TABLES CANONIQUES déjà construites: /Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/enquete_usages_2026/usage-capytale/data/{usages_enriched.csv, teachers.csv, establishments.csv, sessions.csv, facts.json}.
+DÉFINITIONS CANONIQUES (à respecter STRICTEMENT) — voir ${ROOT}/transverse/GLOSSAIRE.md
+- CSV BRUT: ${REPO}/public/data/capytale_fresh_20260619.csv (cols: assignment_id,created,changed,assignment_title,student,role,uai_el,activity_id,teacher,uai_teach,mathadata_id,mathadata_title ; created/changed = epoch secondes UTC -> convertir Europe/Paris).
+- ANNUAIRE: ${REPO}/public/data/annuaire_etablissements.csv (uai,nom,type_etablissement[college|lycee],commune,academie,departement,secteur[Public|Privé],ips,latitude,longitude).
+- TABLES CANONIQUES déjà construites: ${ROOT}/usage-capytale/data/{usages_enriched.csv, teachers.csv, establishments.csv, sessions.csv, facts.json}.
 - Compte démo À EXCLURE: teacher==c81e728d9d4c2f636f067f89cc14862c (195 lignes rôle-vide). Compte pionnier À SIGNALER: teacher==cfcd208495d565ef66e7dff9f98764da (=id "0", 404 élèves, Haubourdin/Lille, actif 2023-26).
 - Année scolaire sy = annee si mois>=8 sinon annee-1 (ex "2024-2025").
 - Prof = id 'teacher'. Tests = lignes role=teacher du prof ; Élèves = lignes role=student du prof.

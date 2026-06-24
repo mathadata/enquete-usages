@@ -8,7 +8,7 @@ export const meta = {
   ],
 }
 
-const ROOT = '/Users/akim/Documents/MathAData_Git/mathadata-dashboard-next/enquete_usages_2026'
+const ROOT = process.env.MATHADATA_ENQUETE_ROOT || `${process.cwd()}/enquete_usages_2026`
 
 const DICT = `
 SHARED DATA (run python3/pandas). Teacher ids are PSEUDONYMS (T000..T223); never attempt to de-anonymise. Commune/academie are establishment-grain and OK to cite.

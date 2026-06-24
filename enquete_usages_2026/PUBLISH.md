@@ -17,13 +17,13 @@ Les dashboards de l'enquête sont diffusés à **un seul endroit** : **GitHub Pa
 
 | Page | Analyse | Fichier source (repo) | GitHub Pages |
 |---|---|---|---|
-| Accueil | portail | `enquete_usages_2026/pages/index.html` | [/](https://akimx98.github.io/mathadata-dashboard-next/) |
-| **Synthèse** | Capstone transversal (à lire en premier) | `enquete_usages_2026/transverse/dashboard_synthese.html` | [/synthese.html](https://akimx98.github.io/mathadata-dashboard-next/synthese.html) |
-| **Typologie** | Cinq façons d'enseigner (profils, rétention) | `enquete_usages_2026/transverse/dashboard_typologie.html` | [/typologie.html](https://akimx98.github.io/mathadata-dashboard-next/typologie.html) |
-| **Séances** | Anatomie d'une séance (scénarios, rythmes, cas) | `enquete_usages_2026/transverse/dashboard_seances.html` | [/seances.html](https://akimx98.github.io/mathadata-dashboard-next/seances.html) |
-| **Volet 1** | Déploiement réel en classe (Capytale) | `enquete_usages_2026/usage-capytale/dashboard.html` | [/volet1.html](https://akimx98.github.io/mathadata-dashboard-next/volet1.html) |
-| **Volet 2** | Du site à la classe (mathadata.fr × Capytale) | `enquete_usages_2026/site-vers-classe/dashboard_volet2.html` | [/volet2.html](https://akimx98.github.io/mathadata-dashboard-next/volet2.html) |
-| **Flux** | Canal d'arrivée → réutilisation → retour (Sankey) | `enquete_usages_2026/transverse/dashboard_flux_profs.html` | [/flux.html](https://akimx98.github.io/mathadata-dashboard-next/flux.html) |
+| Accueil | portail | `enquete_usages_2026/pages/index.html` | [/](https://mathadata.github.io/enquete-usages/) |
+| **Synthèse** | Capstone transversal (à lire en premier) | `enquete_usages_2026/transverse/dashboard_synthese.html` | [/synthese.html](https://mathadata.github.io/enquete-usages/synthese.html) |
+| **Typologie** | Cinq façons d'enseigner (profils, rétention) | `enquete_usages_2026/transverse/dashboard_typologie.html` | [/typologie.html](https://mathadata.github.io/enquete-usages/typologie.html) |
+| **Séances** | Anatomie d'une séance (scénarios, rythmes, cas) | `enquete_usages_2026/transverse/dashboard_seances.html` | [/seances.html](https://mathadata.github.io/enquete-usages/seances.html) |
+| **Volet 1** | Déploiement réel en classe (Capytale) | `enquete_usages_2026/usage-capytale/dashboard.html` | [/volet1.html](https://mathadata.github.io/enquete-usages/volet1.html) |
+| **Volet 2** | Du site à la classe (mathadata.fr × Capytale) | `enquete_usages_2026/site-vers-classe/dashboard_volet2.html` | [/volet2.html](https://mathadata.github.io/enquete-usages/volet2.html) |
+| **Flux** | Canal d'arrivée → réutilisation → retour (Sankey) | `enquete_usages_2026/transverse/dashboard_flux_profs.html` | [/flux.html](https://mathadata.github.io/enquete-usages/flux.html) |
 
 ## Checklist à chaque modification d'un dashboard
 

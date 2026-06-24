@@ -7,7 +7,7 @@
 #
 #   Usage :  bash enquete_usages_2026/publish_pages.sh
 #
-# Voir enquete_usages_2026/PUBLISH.md pour le process complet (+ artifacts claude.ai).
+# Voir enquete_usages_2026/PUBLISH.md pour le process complet.
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
@@ -41,16 +41,21 @@ WT="$(mktemp -d)"
 cleanup(){ git -C "$ROOT" worktree remove "$WT" --force 2>/dev/null || true; }
 trap cleanup EXIT
 
-git -C "$ROOT" fetch origin gh-pages --quiet
-git -C "$ROOT" worktree add -f "$WT" gh-pages --quiet
-git -C "$WT" merge --ff-only origin/gh-pages --quiet 2>/dev/null || true
+if git -C "$ROOT" ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+  git -C "$ROOT" fetch origin gh-pages --quiet
+  git -C "$ROOT" worktree add --detach "$WT" origin/gh-pages --quiet
+  git -C "$WT" rm -rf --quiet .
+else
+  git -C "$ROOT" worktree add --detach "$WT" HEAD --quiet
+  git -C "$WT" switch --orphan gh-pages --quiet
+fi
 
 for pair in "${MAP[@]}"; do
   src="${pair%%:*}"; dst="${pair##*:}"
   cp "$src" "$WT/$dst"
 done
 touch "$WT/.nojekyll"
-# empêche Vercel de déployer cette branche statique (pas d'app Next.js dessus)
+# Documente explicitement que cette branche statique ne doit pas être déployée par Vercel.
 printf '%s\n' '{ "git": { "deploymentEnabled": false } }' > "$WT/vercel.json"
 
 git -C "$WT" add -A
@@ -58,6 +63,6 @@ if git -C "$WT" diff --cached --quiet; then
   echo "✓ gh-pages déjà à jour, rien à publier."
 else
   git -C "$WT" commit -q -m "Publish: sync dashboards depuis la source ($(git -C "$ROOT" rev-parse --short HEAD))"
-  git -C "$WT" push -q origin gh-pages
-  echo "✓ Publié → https://akimx98.github.io/mathadata-dashboard-next/"
+  git -C "$WT" push -q origin HEAD:gh-pages
+  echo "✓ Publié → https://mathadata.github.io/enquete-usages/"
 fi

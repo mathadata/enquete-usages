@@ -1,59 +1,20 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# Système et environnements locaux
 .DS_Store
 *.pem
+__pycache__/
+*.pyc
+.venv/
+venv/
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
+# Secrets et configuration locale
 .env*
 !.env.example
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# uploaded CSV data
-/storage/
-
-# extractions Capytale de travail — non versionnées (cf. enquete_usages_2026/PUBLISH.md)
+# Extractions de travail non canoniques
 /public/data/csv_from_metabase.csv
 /public/data/csv_from_metabase_raw.csv
 /public/data/usages-02042026.csv
 
-# Données nominatives (PII) — outreach, jamais committé
+# Données personnelles et tables locales : jamais versionnées
 enquete_usages_2026/private/
-
-# tables de travail locales de l’enquête (PII-adjacentes, jamais committées)
 enquete_usages_2026/_local/
-
-__pycache__/
-*.pyc
