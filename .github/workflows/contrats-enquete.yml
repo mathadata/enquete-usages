@@ -1,5 +1,6 @@
 name: contrats enquête usages
 on:
+  workflow_dispatch:
   push:
     paths: ['enquete_usages_2026/**']
   pull_request:
