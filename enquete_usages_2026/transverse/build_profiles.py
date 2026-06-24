@@ -288,10 +288,10 @@ facts = dict(
     # déterminants du retour (sur cohorte éligible)
     by_canal = {c: dict(n=int((elig['canal']==c).sum()),
                         revenu=int(elig.loc[elig['canal']==c,'revenu'].sum()))
-                for c in elig['canal'].unique()},
+                for c in ('via_site', 'capytale_direct')},
     by_formation = {f: dict(n=int((elig['formation_statut']==f).sum()),
                             revenu=int(elig.loc[elig['formation_statut']==f,'revenu'].sum()))
-                    for f in elig['formation_statut'].unique()},
+                    for f in ('forme', 'jamais')},
 )
 # réutilisation an-1 (intra-annuel) : niveau de la 1ʳᵉ année classe
 def first_year_level(tid_h):

@@ -46,23 +46,23 @@
   "eligibles": 77,
   "retour_rate_eligible": 33.8,
   "by_canal": {
-    "capytale_direct": {
-      "n": 62,
-      "revenu": 18
-    },
     "via_site": {
       "n": 15,
       "revenu": 8
+    },
+    "capytale_direct": {
+      "n": 62,
+      "revenu": 18
     }
   },
   "by_formation": {
-    "jamais": {
-      "n": 65,
-      "revenu": 19
-    },
     "forme": {
       "n": 12,
       "revenu": 7
+    },
+    "jamais": {
+      "n": 65,
+      "revenu": 19
     }
   },
   "reuse_an1": {
