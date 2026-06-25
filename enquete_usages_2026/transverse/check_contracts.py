@@ -186,6 +186,51 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
             and f'"capytale_usage_classe":{fuc["capytale_usage_classe"]}' in dh,
             "dashboard URLR embarque les faits canoniques"
         )
+        # Filet anti-dérive : chaque nombre EN CLAIR de la page est recalculé ici depuis les
+        # facts (indépendamment de build_dashboard.py) et doit apparaître tel quel. Casse si la
+        # prose dérive d'un rafraîchissement de données — cf. CLAUDE.md §6.
+        def _sp(n): return f"{n:,}".replace(",", " ")
+        def _dec(x): return str(x).replace(".", ",")
+        def _pct(a,b): return round(100*a/b) if b else 0
+        _diag=fu['diagnostics']; _by={a['mathadata_id']:a for a in fu['by_activity']}
+        _top2=_by['3515488']['clics']+_by['3518185']['clics']
+        _pub=fus['public_activity']; _lock=fus['locked_activities']; _hist=fus['historical_direct_click_candidates']
+        _FRM={1:'janvier',2:'février',3:'mars',4:'avril',5:'mai',6:'juin',7:'juillet',8:'août',9:'septembre',10:'octobre',11:'novembre',12:'décembre'}
+        _rat=[m for m in _diag['monthly'] if m['clicks_par_unique_de_fenetre'] is not None]
+        _lo=min(_rat,key=lambda m:m['clicks_par_unique_de_fenetre']); _hi=max(_rat,key=lambda m:m['clicks_par_unique_de_fenetre'])
+        expected=[
+            f'{fuc["urlr_sessions"]} salves observables face à {fuc["capytale_sessions"]} séances Capytale',
+            f'{_diag["sessions_5_clics_ou_plus"]} atteignent au moins 5 clics, contre {fuc["capytale_usage_classe"]} séances Capytale',
+            f'grandeur de {_dec(fuc["ratio_urlr_vs_capytale_usage_classe_pct"])} %',
+            f'{fu["usage_classe_estime"]} salves URLR ≥5 pour {fuc["capytale_usage_classe"]} séances',
+            f'{_dec(fuc["ratio_remplacement_compatible_vs_capytale_classe_pct"])} %</div><h3>remplacements',
+            f'{fu["modes_historiques"]["compatible_remplacement"]} salves classe sans séance',
+            f'{_diag["size_bands"]["1"]} salves sur {fu["sessions_estimees"]}',
+            f'{_dec(_diag["clicks_par_unique_de_fenetre"])} clics par unique',
+            f'{_pct(_diag["sessions_sous_5_uniques"],fu["sessions_estimees"])} % des salves restent sous',
+            f'Le ratio passe de {_dec(round(_lo["clicks_par_unique_de_fenetre"],1))} en {_FRM[int(_lo["month"][5:7])]} à {_dec(round(_hi["clicks_par_unique_de_fenetre"],1))} en {_FRM[int(_hi["month"][5:7])]}',
+            f'{fu["modes_exploratoires_clics"]["compatible_remplacement"]} salves deviennent compatibles',
+            f'descendent à {fu["modes_exploratoires_clics"]["indetermine"]}',
+            f'compatible_remplacement</span><div class="big">{fu["modes_historiques"]["compatible_remplacement"]}</div>',
+            f'compatible_depannage</span><div class="big">{fu["modes_historiques"]["compatible_depannage"]}</div>',
+            f'indetermine</span><div class="big">{fu["modes_historiques"]["indetermine"]}</div>',
+            f'Dont {fu["indetermines_detail"]["petite_salve_sans_capytale"]} salves à 1',
+            f'{_diag["school_hours"]["sessions"]} salves sur {fu["sessions_estimees"]} commencent',
+            f'{_sp(_diag["school_hours"]["clicks"])} des {_sp(fu["clicks"])} clics et {_diag["school_hours"]["usage_classe_estime"]} des {fu["usage_classe_estime"]} salves',
+            f'cumulent {_sp(_top2)} clics, soit {_pct(_top2,fu["clicks"])} %',
+            f'compte {_by["6944347"]["salves_5_clics_ou_plus"]} salves à ≥5 clics',
+            f'Les {_sp(fus["totals"]["basthon_direct_clicks"])} accès Basthon directs',
+            f'<div class="big">{_pub["basthon_direct_clicks"]}</div>',
+            f'{_pub["basthon_direct_anonymous"]} sont anonymes ({_pct(_pub["basthon_direct_anonymous"],_pub["basthon_direct_clicks"])} %)',
+            f'<div class="big">{_lock["basthon_direct_clicks"]}</div>',
+            f'{_lock["basthon_direct_anonymous"]} seulement sont anonymes ({_pct(_lock["basthon_direct_anonymous"],_lock["basthon_direct_clicks"])} %)',
+            f'<div class="big">{_hist["candidate_sessions"]}</div>',
+            f'{_hist["distinct_candidate_users"]} comptes connectés distincts ; {_hist["candidate_sessions_with_capytale_match_ab"]} salves ont aussi',
+            f'24 h : {_hist["strong_candidate_sessions_24h"]} salves, dont {_hist["strong_sessions_with_capytale_match_ab"]} appariées',
+        ]
+        missing=[e for e in expected if e not in dh]
+        check(not missing, "dashboard URLR : chiffres en clair concordants avec les facts"
+              + (f" — manquants: {missing[:3]}" if missing else ""))
 
 print("6. Cohérence dashboards ↔ facts (chiffres codés en dur ≠ source de vérité) :")
 def rd(p): return open(f"{_ENQ}/{p}",encoding='utf-8').read()

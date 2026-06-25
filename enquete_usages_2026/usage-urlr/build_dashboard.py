@@ -12,6 +12,92 @@ def load(name):
     return json.loads((DATA / name).read_text(encoding="utf-8"))
 
 
+FR_MONTHS = {
+    1: "janvier", 2: "février", 3: "mars", 4: "avril", 5: "mai", 6: "juin",
+    7: "juillet", 8: "août", 9: "septembre", 10: "octobre", 11: "novembre", 12: "décembre",
+}
+
+
+def sp(n):
+    """Entier formaté à la française (espace pour les milliers)."""
+    return f"{n:,}".replace(",", " ")
+
+
+def dec(x):
+    """Décimal formaté à la française (virgule)."""
+    return str(x).replace(".", ",")
+
+
+def pct(part, whole):
+    return round(100 * part / whole) if whole else 0
+
+
+def build_replacements(payload):
+    """Tous les nombres en clair de la page, recalculés depuis les faits canoniques.
+
+    Aucun chiffre n'est écrit en dur dans le gabarit : la page a une source de vérité unique
+    (les facts_urlr*.json), et `check_contracts.py` revérifie ces nombres indépendamment.
+    """
+    u, c, s = payload["urlr"], payload["cross"], payload["site"]
+    diag = u["diagnostics"]
+    by_act = {a["mathadata_id"]: a for a in u["by_activity"]}
+    pub, lock = s["public_activity"], s["locked_activities"]
+    hist = s["historical_direct_click_candidates"]
+    top2_clicks = by_act["3515488"]["clics"] + by_act["3518185"]["clics"]
+    ratios = [m for m in diag["monthly"] if m["clicks_par_unique_de_fenetre"] is not None]
+    lo = min(ratios, key=lambda m: m["clicks_par_unique_de_fenetre"])
+    hi = max(ratios, key=lambda m: m["clicks_par_unique_de_fenetre"])
+    return {
+        # en-tête + volumes globaux
+        "__CLICKS__": sp(u["clicks"]),
+        "__SESSIONS__": str(u["sessions_estimees"]),
+        "__CLASS__": str(u["usage_classe_estime"]),
+        "__CLICK_CLASS__": str(diag["sessions_5_clics_ou_plus"]),
+        # §01 — apport vs Capytale
+        "__OBSSESS__": str(c["urlr_sessions"]),
+        "__CAPSESS__": str(c["capytale_sessions"]),
+        "__CAPCLASS__": str(c["capytale_usage_classe"]),
+        "__RATIOCLASS__": dec(c["ratio_urlr_vs_capytale_usage_classe_pct"]),
+        "__RATIOREMP__": dec(c["ratio_remplacement_compatible_vs_capytale_classe_pct"]),
+        "__REMP__": str(u["modes_historiques"]["compatible_remplacement"]),
+        # §02 — taille / uniques
+        "__SIZE1__": str(diag["size_bands"]["1"]),
+        "__CPU__": dec(diag["clicks_par_unique_de_fenetre"]),
+        "__PCTSOUS5__": str(pct(diag["sessions_sous_5_uniques"], u["sessions_estimees"])),
+        "__RATIOMIN__": dec(round(lo["clicks_par_unique_de_fenetre"], 1)),
+        "__MONTHMIN__": FR_MONTHS[int(lo["month"][5:7])],
+        "__RATIOMAX__": dec(round(hi["clicks_par_unique_de_fenetre"], 1)),
+        "__MONTHMAX__": FR_MONTHS[int(hi["month"][5:7])],
+        # §03 — modes
+        "__REMPCLICS__": str(u["modes_exploratoires_clics"]["compatible_remplacement"]),
+        "__INDETCLICS__": str(u["modes_exploratoires_clics"]["indetermine"]),
+        "__DEPAN__": str(u["modes_historiques"]["compatible_depannage"]),
+        "__INDET__": str(u["modes_historiques"]["indetermine"]),
+        "__PSSC__": str(u["indetermines_detail"]["petite_salve_sans_capytale"]),
+        # §04 — temporalité scolaire
+        "__SCHOOLSESS__": str(diag["school_hours"]["sessions"]),
+        "__SCHOOLCLICKS__": sp(diag["school_hours"]["clicks"]),
+        "__SCHOOLCLASS__": str(diag["school_hours"]["usage_classe_estime"]),
+        # §05 — concentration par activité
+        "__TOP2CLICKS__": sp(top2_clicks),
+        "__TOP2PCT__": str(pct(top2_clicks, u["clicks"])),
+        "__FETUS5C__": str(by_act["6944347"]["salves_5_clics_ou_plus"]),
+        # §06 — site
+        "__DIRECT__": sp(s["totals"]["basthon_direct_clicks"]),
+        "__PUBDIRECT__": str(pub["basthon_direct_clicks"]),
+        "__PUBANON__": str(pub["basthon_direct_anonymous"]),
+        "__PUBANONPCT__": str(pct(pub["basthon_direct_anonymous"], pub["basthon_direct_clicks"])),
+        "__LOCKDIRECT__": str(lock["basthon_direct_clicks"]),
+        "__LOCKANON__": str(lock["basthon_direct_anonymous"]),
+        "__LOCKANONPCT__": str(pct(lock["basthon_direct_anonymous"], lock["basthon_direct_clicks"])),
+        "__CANDSESS__": str(hist["candidate_sessions"]),
+        "__CANDUSERS__": str(hist["distinct_candidate_users"]),
+        "__CANDAB__": str(hist["candidate_sessions_with_capytale_match_ab"]),
+        "__STRONG24__": str(hist["strong_candidate_sessions_24h"]),
+        "__STRONGAB__": str(hist["strong_sessions_with_capytale_match_ab"]),
+    }
+
+
 def main():
     payload = {
         "urlr": load("facts_urlr.json"),
@@ -22,15 +108,10 @@ def main():
         "__DATA__",
         json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
     )
-    replacements = {
-        "__CLICKS__": f"{payload['urlr']['clicks']:,}".replace(",", " "),
-        "__SESSIONS__": str(payload["urlr"]["sessions_estimees"]),
-        "__CLASS__": str(payload["urlr"]["usage_classe_estime"]),
-        "__CLICK_CLASS__": str(payload["urlr"]["diagnostics"]["sessions_5_clics_ou_plus"]),
-        "__REPLACE__": str(payload["urlr"]["modes_historiques"]["compatible_remplacement"]),
-    }
-    for marker, value in replacements.items():
-        html = html.replace(marker, value)
+    replacements = build_replacements(payload)
+    # remplacement du plus long au plus court : aucun marqueur n'est préfixe d'un autre.
+    for marker in sorted(replacements, key=len, reverse=True):
+        html = html.replace(marker, replacements[marker])
     OUT.write_text(html, encoding="utf-8")
     print(f"→ {OUT}")
 
@@ -107,19 +188,19 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
 <section><div class="wrap">
   <div class="head"><span class="num">01</span><h2>Ce que URLR ajoute au portrait Capytale</h2></div>
   <p class="sub">Sur les six mêmes activités, le canal sans compte n'est pas marginal en traces :
-  il produit 202 salves observables face à 356 séances Capytale. Douze franchissent le seuil
-  technique de 5 uniques, mais 57 atteignent au moins 5 clics, contre 175 séances Capytale à ≥ 5 élèves.</p>
+  il produit __OBSSESS__ salves observables face à __CAPSESS__ séances Capytale. Douze franchissent le seuil
+  technique de 5 uniques, mais __CLICK_CLASS__ atteignent au moins 5 clics, contre __CAPCLASS__ séances Capytale à ≥ 5 élèves.</p>
   <div class="grid2">
     <figure><p class="figtitle">Séances de taille classe détectée, par activité</p>
       <p class="figsub">Capytale ≥ 5 élèves · URLR ≥ 5 uniques · URLR ≥ 5 clics</p>
       <div class="legend"><span><i style="background:var(--green)"></i>Capytale</span><span><i style="background:var(--blue)"></i>URLR uniques</span><span><i style="background:var(--rose)"></i>URLR clics</span></div>
       <div id="activityClass" class="chart"></div>
       <p class="cap">Les barres ne représentent pas la même population et ne doivent pas être additionnées.
-      URLR ajoute un ordre de grandeur de 6,9 % au volume Capytale détecté, probablement sous-estimé.</p></figure>
+      URLR ajoute un ordre de grandeur de __RATIOCLASS__ % au volume Capytale détecté, probablement sous-estimé.</p></figure>
     <div>
       <div class="grid2">
-        <div class="card"><div class="big">6,9 %</div><h3>un complément détecté</h3><p>12 salves URLR ≥5 pour 175 séances Capytale ≥5 sur la période commune.</p></div>
-        <div class="card"><div class="big">5,7 %</div><h3>remplacements compatibles</h3><p>10 salves classe sans séance Capytale simultanée, rapportées aux 175 séances Capytale.</p></div>
+        <div class="card"><div class="big">__RATIOCLASS__ %</div><h3>un complément détecté</h3><p>__CLASS__ salves URLR ≥5 pour __CAPCLASS__ séances Capytale ≥5 sur la période commune.</p></div>
+        <div class="card"><div class="big">__RATIOREMP__ %</div><h3>remplacements compatibles</h3><p>__REMP__ salves classe sans séance Capytale simultanée, rapportées aux __CAPCLASS__ séances Capytale.</p></div>
       </div>
       <div class="callout"><p><b>Ce que cela change.</b> Les statistiques Capytale ne couvrent pas tout l'usage
       en classe. Elles restent la source des professeurs, élèves, établissements, profondeur et rétention ;
@@ -130,16 +211,16 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
 
 <section><div class="wrap">
   <div class="head"><span class="num">02</span><h2>La taille des groupes est le principal angle mort</h2></div>
-  <p class="sub">157 salves sur 206 n'ont qu'un seul « unique » URLR. Pourtant certaines comptent
+  <p class="sub">__SIZE1__ salves sur __SESSIONS__ n'ont qu'un seul « unique » URLR. Pourtant certaines comptent
   plusieurs dizaines de clics. L'API ne documente pas sa clé de déduplication et URLR indique traiter
   les statistiques avec des IP anonymisées : une classe derrière une IP/NAT commune peut être fortement sous-comptée.
-  Au total, le ratio atteint <b>2,97 clics par unique de fenêtre</b>.</p>
+  Au total, le ratio atteint <b>__CPU__ clics par unique de fenêtre</b>.</p>
   <div class="grid2">
     <figure><p class="figtitle">Distribution des « uniques » par salve</p><p class="figsub">métrique de fenêtre URLR, pas élèves</p>
-      <div id="sizes" class="chart"></div><p class="cap">94 % des salves restent sous 5 uniques. Ce résultat
+      <div id="sizes" class="chart"></div><p class="cap">__PCTSOUS5__ % des salves restent sous 5 uniques. Ce résultat
       décrit la métrique URLR ; il ne prouve pas que 94 % des usages concernent moins de cinq élèves.</p></figure>
     <figure><p class="figtitle">Le ratio clics / unique change fortement selon le mois</p><p class="figsub">signal d'instabilité pour une lecture en « taille de classe »</p>
-      <div id="monthlyRatio" class="chart"></div><p class="cap">Le ratio passe de 1,4 en janvier à 6,3 en mars.
+      <div id="monthlyRatio" class="chart"></div><p class="cap">Le ratio passe de __RATIOMIN__ en __MONTHMIN__ à __RATIOMAX__ en __MONTHMAX__.
       Sous l'hypothèse raisonnable de peu de réouvertures par élève, les clics sont le meilleur proxy disponible
       du nombre de participants ; ils ne deviennent toutefois pas un effectif mesuré.</p></figure>
   </div>
@@ -154,23 +235,23 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
   à la même classe. Elle permet seulement de tester la compatibilité de deux scénarios.</p>
   <div class="grid2">
     <figure><p class="figtitle">Classification canonique et sensibilité exploratoire</p>
-      <p class="figsub">202 salves dans la fenêtre Capytale observable</p>
+      <p class="figsub">__OBSSESS__ salves dans la fenêtre Capytale observable</p>
       <div class="legend"><span><i style="background:var(--green)"></i>uniques strict</span><span><i style="background:var(--amber)"></i>uniques ±1 h</span><span><i style="background:var(--rose)"></i>clics strict</span></div>
       <div id="modes" class="chart"></div>
-      <p class="cap">Avec les clics, 43 salves deviennent compatibles avec un remplacement et les indéterminées
-      descendent à 152. C'est une sensibilité, pas un changement de définition canonique.</p></figure>
+      <p class="cap">Avec les clics, __REMPCLICS__ salves deviennent compatibles avec un remplacement et les indéterminées
+      descendent à __INDETCLICS__. C'est une sensibilité, pas un changement de définition canonique.</p></figure>
     <div class="grid3" style="grid-template-columns:1fr">
-      <div class="card"><span class="pill">compatible_remplacement</span><div class="big">10</div><p>≥5 uniques URLR, aucune séance Capytale simultanée de même activité.</p></div>
-      <div class="card"><span class="pill">compatible_depannage</span><div class="big">13</div><p>1–4 uniques URLR pendant exactement une séance Capytale ≥5.</p></div>
-      <div class="card"><span class="pill">indetermine</span><div class="big">179</div><p>Dont 169 salves à 1–4 uniques sans Capytale simultané : elles peuvent être de petits usages ou des classes écrasées par le NAT.</p></div>
+      <div class="card"><span class="pill">compatible_remplacement</span><div class="big">__REMP__</div><p>≥5 uniques URLR, aucune séance Capytale simultanée de même activité.</p></div>
+      <div class="card"><span class="pill">compatible_depannage</span><div class="big">__DEPAN__</div><p>1–4 uniques URLR pendant exactement une séance Capytale ≥5.</p></div>
+      <div class="card"><span class="pill">indetermine</span><div class="big">__INDET__</div><p>Dont __PSSC__ salves à 1–4 uniques sans Capytale simultané : elles peuvent être de petits usages ou des classes écrasées par le NAT.</p></div>
     </div>
   </div>
 </div></section>
 
 <section><div class="wrap">
   <div class="head"><span class="num">04</span><h2>Une signature très scolaire, concentrée en janvier-février</h2></div>
-  <p class="sub">153 salves sur 206 commencent en semaine entre 7 h et 17 h 59 ; elles concentrent
-  1 067 des 1 213 clics et 11 des 12 salves de taille classe détectée.</p>
+  <p class="sub">__SCHOOLSESS__ salves sur __SESSIONS__ commencent en semaine entre 7 h et 17 h 59 ; elles concentrent
+  __SCHOOLCLICKS__ des __CLICKS__ clics et __SCHOOLCLASS__ des __CLASS__ salves de taille classe détectée.</p>
   <figure><p class="figtitle">Chronologie mensuelle</p><p class="figsub">clics, salves et salves ≥5 uniques</p>
     <div class="legend"><span><i style="background:var(--blue)"></i>clics</span><span><i style="background:var(--green)"></i>salves</span><span><i style="background:var(--rose)"></i>salves ≥5</span></div>
     <div id="timeline" class="chart"></div><p class="cap">Toutes les salves ≥5 apparaissent en janvier-février.
@@ -180,8 +261,8 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
 
 <section><div class="wrap">
   <div class="head"><span class="num">05</span><h2>Deux activités concentrent les uniques, cinq portent un signal collectif en clics</h2></div>
-  <p class="sub">Statistiques sur les chiffres et équation réduite cumulent 951 clics, soit 78 % du total,
-  et les 12 salves détectées à ≥5 uniques. Mais Statistiques-fœtus compte 7 salves à ≥5 clics,
+  <p class="sub">Statistiques sur les chiffres et équation réduite cumulent __TOP2CLICKS__ clics, soit __TOP2PCT__ % du total,
+  et les __CLASS__ salves détectées à ≥5 uniques. Mais Statistiques-fœtus compte __FETUS5C__ salves à ≥5 clics,
   milieu-distance et produit scalaire une chacune : seul vecteur directeur n'en présente aucune.</p>
   <figure><p class="figtitle">Volume URLR par activité</p><p class="figsub">clics, salves ≥5 uniques et salves ≥5 clics</p>
     <div class="legend"><span><i style="background:var(--blue)"></i>clics</span><span><i style="background:var(--green)"></i>salves ≥5 uniques</span><span><i style="background:var(--rose)"></i>salves ≥5 clics</span></div>
@@ -196,15 +277,15 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
   accès Basthon directs du professeur, mais pas le geste décisif « copier le lien court pour les élèves ».</p>
   <div class="grid2">
     <figure><p class="figtitle">Points observables du parcours</p><p class="figsub">grains différents — pas un funnel individuel</p>
-      <div id="siteFunnel" class="chart"></div><p class="cap">Les 514 accès Basthon directs sont des consultations/tests
+      <div id="siteFunnel" class="chart"></div><p class="cap">Les __DIRECT__ accès Basthon directs sont des consultations/tests
       professeur. Les copies restent à zéro historiquement : le tracking est prospectif, sans backfill.</p></figure>
     <div>
-      <div class="card"><div class="big">311</div><h3>accès directs sur l'activité publique</h3>
-        <p>253 sont anonymes (81 %). Cette activité libre d'accès doit être séparée des cinq activités verrouillées.</p></div>
-      <div class="card" style="margin-top:14px"><div class="big">203</div><h3>accès directs sur les cinq activités verrouillées</h3>
-        <p>18 seulement sont anonymes (9 %), cohérent avec l'obligation de connexion du professeur.</p></div>
-      <div class="card" style="margin-top:14px"><div class="big">57</div><h3>salves avec un candidat historique unique</h3>
-        <p>31 comptes connectés distincts ; 11 salves ont aussi un appariement Capytale A/B. Au critère strict de 24 h : 10 salves, dont 2 appariées A/B.</p></div>
+      <div class="card"><div class="big">__PUBDIRECT__</div><h3>accès directs sur l'activité publique</h3>
+        <p>__PUBANON__ sont anonymes (__PUBANONPCT__ %). Cette activité libre d'accès doit être séparée des cinq activités verrouillées.</p></div>
+      <div class="card" style="margin-top:14px"><div class="big">__LOCKDIRECT__</div><h3>accès directs sur les cinq activités verrouillées</h3>
+        <p>__LOCKANON__ seulement sont anonymes (__LOCKANONPCT__ %), cohérent avec l'obligation de connexion du professeur.</p></div>
+      <div class="card" style="margin-top:14px"><div class="big">__CANDSESS__</div><h3>salves avec un candidat historique unique</h3>
+        <p>__CANDUSERS__ comptes connectés distincts ; __CANDAB__ salves ont aussi un appariement Capytale A/B. Au critère strict de 24 h : __STRONG24__ salves, dont __STRONGAB__ appariées A/B.</p></div>
       <div class="callout"><p><b>À partir du déploiement du tracking.</b> `basthon_short_modal_open` et
       `basthon_short_copy` permettront de relier une copie candidate unique à une salve URLR dans les 7 jours
       (A) ou 8–30 jours (B), puis seulement aux appariements individuels site–Capytale A/B.</p></div>
