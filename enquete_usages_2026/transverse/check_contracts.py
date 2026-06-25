@@ -90,9 +90,62 @@ check(fiv.get('eligible_n')==101, "facts_investigation : base élargie n=101 (�
 print("5. Pas d'e-mail dans les CSV versionnés (AUCUN, même @mathadata.fr) :")
 EMAIL=re.compile(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}')
 leak=[]
-for f in glob.glob(f"{_ENQ}/**/data/*.csv", recursive=True):
+for f in glob.glob(f"{_ENQ}/**/data/*.csv", recursive=True) + glob.glob(f"{_ENQ}/../public/data/*.csv"):
     if EMAIL.search(open(f,encoding='utf-8',errors='ignore').read()): leak.append(_os.path.relpath(f,_ENQ))
-check(not leak, f"aucun e-mail dans data/ ({'fuites: '+', '.join(leak) if leak else 'OK'})")
+check(not leak, f"aucun e-mail dans data/ et public/data/ ({'fuites: '+', '.join(leak) if leak else 'OK'})")
+
+print("5a. Extractions URLR (schéma nettoyé + cohérence quotidien↔total) :")
+urlr_links=sorted(glob.glob(f"{_ENQ}/../public/data/urlr_links_*.csv"))
+urlr_daily=sorted(glob.glob(f"{_ENQ}/../public/data/urlr_daily_*.csv"))
+urlr_hourly=sorted(glob.glob(f"{_ENQ}/../public/data/urlr_hourly_*.csv"))
+urlr_bursts=sorted(glob.glob(f"{_ENQ}/../public/data/urlr_bursts_*.csv"))
+check(len(urlr_links)==len(urlr_daily)==len(urlr_hourly)==len(urlr_bursts),
+      "chaque extraction urlr_links_* possède ses tables daily_*, hourly_* et bursts_*")
+for lf, df, hf, bf in zip(urlr_links, urlr_daily, urlr_hourly, urlr_bursts):
+    stamps=[re.search(r'(\d{8})\.csv$',f) for f in (lf,df,hf,bf)]
+    check(all(stamps) and len({m.group(1) for m in stamps})==1,
+          f"triplet URLR daté de façon cohérente ({_os.path.basename(lf)})")
+    links=pd.read_csv(lf,dtype=str,keep_default_na=False)
+    daily=pd.read_csv(df,dtype=str,keep_default_na=False)
+    hourly=pd.read_csv(hf,dtype=str,keep_default_na=False)
+    bursts=pd.read_csv(bf,dtype=str,keep_default_na=False)
+    req_l={'link_id','short_url','label','mathadata_id','mathadata_title','destination_url','visits','unique_visits','clicks','scans','extracted_at'}
+    req_d={'link_id','mathadata_id','mathadata_title','date_paris','visits','unique_visits','clicks','scans','extracted_at'}
+    req_h={'link_id','mathadata_id','mathadata_title','hour_start','hour_end','visits','unique_visits','clicks','scans','extracted_at'}
+    req_b={'burst_id','link_id','mathadata_id','mathadata_title','start','end','active_hours','visits','unique_visits','clicks','scans','extracted_at'}
+    check(req_l<=set(links.columns) and req_d<=set(daily.columns) and req_h<=set(hourly.columns) and req_b<=set(bursts.columns),
+          "schémas URLR requis présents")
+    check(not {'user','workspace_id','folder_id'} & set(links.columns), "champs URLR personnels/internes exclus")
+    check(not daily.duplicated(['link_id','date_paris']).any(), "grain URLR quotidien unique (lien × jour)")
+    check(not hourly.duplicated(['link_id','hour_start']).any(), "grain URLR horaire unique (lien × heure)")
+    cap=pd.read_csv(f"{_ENQ}/../public/data/capytale_fresh_20260619.csv",dtype=str,keep_default_na=False)
+    canonical=set(map(tuple,cap[['mathadata_id','mathadata_title']].drop_duplicates().values.tolist()))
+    mapped=set(map(tuple,links[['mathadata_id','mathadata_title']].drop_duplicates().values.tolist()))
+    check(mapped<=canonical and len(mapped)==len(links), "mapping URLR → activité MathAData/Capytale canonique et 1:1")
+    for c in ('visits','clicks','scans'):
+        total=pd.to_numeric(links[c]).groupby(links['link_id']).sum()
+        by_day=pd.to_numeric(daily[c]).groupby(daily['link_id']).sum().reindex(total.index,fill_value=0)
+        by_hour=pd.to_numeric(hourly[c]).groupby(hourly['link_id']).sum().reindex(total.index,fill_value=0)
+        by_burst=pd.to_numeric(bursts[c]).groupby(bursts['link_id']).sum().reindex(total.index,fill_value=0)
+        check(total.equals(by_day), f"URLR somme quotidienne {c} = total de fenêtre")
+        check(total.equals(by_hour), f"URLR somme horaire {c} = total de fenêtre")
+        check(total.equals(by_burst), f"URLR somme par salve {c} = total de fenêtre")
+
+urlr_dir=f"{_ENQ}/usage-urlr/data"
+if _os.path.exists(f"{urlr_dir}/sessions.csv"):
+    us=pd.read_csv(f"{urlr_dir}/sessions.csv",dtype=str,keep_default_na=False)
+    fu=loadstrict(f"{urlr_dir}/facts_urlr.json")
+    fuc=loadstrict(f"{urlr_dir}/facts_urlr_cross.json")
+    modes={'compatible_remplacement','compatible_depannage','indetermine'}
+    check(set(us['mode_historique'])<=modes and set(us['mode_sensibilite_pm1h'])<=modes,
+          "modes URLR exclusifs dans le vocabulaire canonique")
+    check(len(us)==fu['sessions_estimees'], "facts_urlr.sessions_estimees = table sessions")
+    check(pd.to_numeric(us['clicks']).sum()==fu['clicks']==sum(pd.to_numeric(pd.read_csv(urlr_links[-1])['clicks'])),
+          "clics URLR conservés liens → salves → sessions → facts")
+    observable=us['capytale_observable'].eq('True')
+    check(sum(fu['modes_historiques'].values())==int(observable.sum()),
+          "modes historiques exhaustifs sur la période Capytale observable")
+    check(fuc['urlr_sessions']==int(observable.sum()), "facts_urlr_cross aligné sur sessions observables")
 
 print("6. Cohérence dashboards ↔ facts (chiffres codés en dur ≠ source de vérité) :")
 def rd(p): return open(f"{_ENQ}/{p}",encoding='utf-8').read()

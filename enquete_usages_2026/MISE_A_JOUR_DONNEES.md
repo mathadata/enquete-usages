@@ -1,9 +1,10 @@
 # Mettre à jour les données de l'enquête
 
-Ce guide couvre les deux entrées brutes :
+Ce guide couvre les trois entrées brutes :
 
 - le snapshot Payload de `mathadata.fr`, nominatif et strictement local ;
 - l'extraction CSV Capytale, pseudonymisée et versionnée dans ce dépôt.
+- les statistiques URLR, anonymes, agrégées et versionnées dans ce dépôt.
 
 ## Prérequis
 
@@ -145,3 +146,30 @@ l'extraction utilisée soit identifiable.
 
 Schéma des colonnes, endpoint, gestion du token et promotion durable comme nouvelle référence :
 [`DONNEES_BRUTES_CAPYTALE.md`](DONNEES_BRUTES_CAPYTALE.md).
+
+## 5. URLR
+
+Les liens URLR ouvrent les versions sans compte des activités. La source est indépendante de
+Payload et de Capytale : elle ne contient aucune identité de visiteur. Historiquement, elle ne peut
+être rapprochée qu'au grain activité × temps. Le tracking prospectif de copie permet une attribution
+inférée limitée aux copies candidates uniques et aux appariements individuels A/B.
+
+```bash
+# URLR_API_KEY dans .env.local à la racine
+python3 enquete_usages_2026/fetch_urlr.py
+```
+
+Quatre CSV datés sont écrits sans écrasement dans `public/data/` :
+
+- `urlr_links_<AAAAMMJJ>.csv` — métadonnées nettoyées et totaux par lien ;
+- `urlr_daily_<AAAAMMJJ>.csv` — métriques par lien × jour de Paris, jours nuls omis.
+- `urlr_hourly_<AAAAMMJJ>.csv` — métriques par lien × heure de Paris, heures nulles omises.
+- `urlr_bursts_<AAAAMMJJ>.csv` — salves <3 h avec uniques recalculés sur la fenêtre complète.
+
+Le fetch réseau ne fait pas partie de `rebuild_all.sh`. Une fois l'extraction présente, la
+reconstruction des séances, les faits URLR × Capytale et le croisement Payload sont intégrés au
+rebuild général. Le croisement Payload est sauté proprement si aucun snapshot local n'est présent.
+
+Le champ `user` renvoyé par URLR contient l'e-mail du créateur et est explicitement exclu. Le détail
+du schéma, le mapping `mathadata_id`, les contrôles et la non-additivité de `unique_visits` sont documentés dans
+[`DONNEES_BRUTES_URLR.md`](DONNEES_BRUTES_URLR.md).

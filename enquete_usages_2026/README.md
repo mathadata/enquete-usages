@@ -12,7 +12,9 @@ de données), mais le découpage compte moins que la question traitée.
 enquete_usages_2026/
 ├── transverse/  — ★ GLOSSAIRE (définitions canoniques) · couche de calcul profils · synthèse · typologie · séances · flux
 ├── usage-capytale/   — source Capytale seule (usage en classe, anonyme)
-└── site-vers-classe/   — source croisée mathadata.fr (site, nominatif) × Capytale
+├── site-vers-classe/   — source croisée mathadata.fr (site, nominatif) × Capytale
+├── usage-urlr/   — source URLR agrégée (graphiques des ouvertures sans compte)
+└── fetch_urlr.py   — source URLR agrégée (ouvertures des activités sans compte)
 ```
 
 > 📖 **Avant tout calcul, lire [`transverse/GLOSSAIRE.md`](transverse/GLOSSAIRE.md)** — source de vérité
@@ -42,6 +44,16 @@ Reconstitue le **pipeline complet** (notoriété → compte → formation → Ca
 - Page web : `site-vers-classe/dashboard_volet2.html` → https://mathadata.github.io/enquete-usages/volet2.html
 - Pipeline : `build_payload_canonical.py` → `compute_cross_facts.py` → `build_formation_cohorts.py` → `match_individuals.py` → `make_charts_volet2.py` (+ workflows). Source de vérité : `site-vers-classe/data/facts_cross.json` & `facts_formation.json`.
 
+## [URLR — Activités sans compte](usage-urlr/) (`usage-urlr/`)
+Observe les volumes anonymes agrégés d'ouverture des liens courts vers les notebooks Basthon,
+depuis le 25 décembre 2025. Aucun visiteur, professeur, établissement ou événement individuel
+n'est disponible. Des séances sont estimées à partir des heures actives, avec distinction entre
+remplacement compatible, dépannage compatible et cas indéterminé.
+- Rapport : [`usage-urlr/RAPPORT_USAGE_URLR.md`](usage-urlr/RAPPORT_USAGE_URLR.md).
+- Graphiques : `usage-urlr/charts/`.
+- Régénération : `python3 enquete_usages_2026/usage-urlr/make_charts.py`.
+- Schéma et provenance : [`DONNEES_BRUTES_URLR.md`](DONNEES_BRUTES_URLR.md).
+
 ## [Transverse — Typologie des profils](transverse/) (`transverse/`)
 Refonte **data-driven et vérifiée** de la sociologie des usages (prolonge et corrige le document
 historique non canonique
@@ -63,6 +75,9 @@ confirmés (collectif intra-établissement, « effet formation » = artefact de 
 
 ## Entrées de l'enquête
 - `public/data/capytale_fresh_20260619.csv` — extraction usage Capytale (versionnée).
+- `public/data/urlr_{links,daily,hourly}_20260625.csv` — métadonnées, totaux et séries temporelles
+  anonymes URLR, enrichis avec le `mathadata_id` canonique ; voir
+  [`DONNEES_BRUTES_URLR.md`](DONNEES_BRUTES_URLR.md).
 - `public/data/annuaire_etablissements.csv` — référentiel établissements (IPS, géo).
 - Snapshot Payload `mathadata.fr` (PII) : `mathadata-website/private/payload-snapshots/…` — **gitignore, hors dépôt, jamais committé**. Le Volet 2 le lit en local pour calculer ; aucune sortie versionnée ne contient nom/prénom/e-mail.
 

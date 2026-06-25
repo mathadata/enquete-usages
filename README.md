@@ -25,6 +25,9 @@ jamais versionné. Le pipeline sélectionne le snapshot horodaté le plus récen
 définir `MATHADATA_SNAPSHOT` permet de figer explicitement une extraction. Voir
 [`enquete_usages_2026/MISE_A_JOUR_DONNEES.md`](enquete_usages_2026/MISE_A_JOUR_DONNEES.md).
 
+Les statistiques anonymes des liens courts URLR sont récupérées séparément par
+`python3 enquete_usages_2026/fetch_urlr.py` et versionnées dans `public/data/`.
+
 ## Dépôts liés
 
 - Dashboard interactif Next.js : [`akimx98/mathadata-dashboard-next`](https://github.com/akimx98/mathadata-dashboard-next)

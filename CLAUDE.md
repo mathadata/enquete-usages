@@ -46,6 +46,13 @@ Le pont : un clic site `web/b/<id>` → `<id> == mathadata_id` Capytale. Sinon, 
 individuel inféré** (signaux A/B/D/E, 75 paires) + **trace établissement**. Tout ce qui relie les deux
 mondes est **estimé**, jamais mesuré — le dire explicitement.
 
+Source complémentaire **URLR** : statistiques anonymes agrégées des liens courts vers les activités
+sans compte (actuellement Basthon), disponibles depuis le 25/12/2025. Aucun visiteur ou
+établissement n'est identifiable. Des séances sont **estimées** au grain activité × temps ; leurs
+rapprochements Capytale historiques restent nationaux et inférés. Entrées :
+`public/data/urlr_{links,daily,hourly,bursts}_*.csv`, produites par `fetch_urlr.py`. Le mapping
+canonique vers `mathadata_id` vit dans `enquete_usages_2026/urlr_activity_mapping.csv`.
+
 ## 4. Pièges à connaître (déjà payés — ne pas refaire)
 
 - **`n_teacher_clones` / `n_teacher_accounts` ≠ nombre de profs.** Ces colonnes ne comptent que les
@@ -193,6 +200,7 @@ Quand on te pose une question sur les données, **dans l'ordre** :
 |---|---|---|
 | `usage-capytale/data/usages_enriched.csv` | 1 affectation Capytale (clone) | base brute enrichie (rôle, activité, UAI, `sy`, dates, `session_id`) |
 | `usage-capytale/data/sessions.csv` | 1 séance reconstruite | tailles de classe (`n_eleves`), durées, rythmes |
+| `usage-urlr/data/sessions.csv` | 1 séance Basthon estimée | uniques URLR par fenêtre, chevauchements Capytale, modes compatibles |
 | `usage-capytale/data/teachers.csv` | 1 prof (md5) | comportement test/enseigne, UAI, années actives/enseignées |
 | `usage-capytale/data/establishments.csv` | 1 UAI | géo/IPS/secteur, agrégats établissement |
 | `transverse/data/profiles_teacher.csv` | 1 prof (md5[:8]) | **★ profil canonique** : niveau, canal, formation×timing, rétention |
@@ -210,7 +218,10 @@ Quand on te pose une question sur les données, **dans l'ordre** :
 | `usage-capytale/data/facts.json` | volet 1 : croissance, comportements, géo, IPS, tailles |
 | `site-vers-classe/data/facts_cross.json`, `facts_formation.json` | croisement site×Capytale, effet formation, cohortes |
 | `transverse/data/facts_typologie.json`, `facts_investigation.json`, `facts_scenarios.json` | typologie & séances |
+| `usage-urlr/data/facts_urlr.json`, `facts_urlr_cross.json`, `facts_urlr_site.json` | volumes URLR, modes remplacement/dépannage, croisements Capytale et site |
 
 **Entrées brutes** : `public/data/capytale_fresh_20260619.csv` (versionné) ; snapshot Payload
 **local & gitignore** (`../mathadata-website/private/payload-snapshots/<timestamp>/`, ou chemin défini
-par `MATHADATA_SNAPSHOT`).
+par `MATHADATA_SNAPSHOT`) ; statistiques URLR anonymes
+`public/data/urlr_{links,daily,hourly,bursts}_20260625.csv` (versionnées ; fetch réseau hors
+`rebuild_all.sh`, dérivés inclus dans le rebuild).

@@ -1,6 +1,6 @@
 ---
 name: analyse-usages-mathadata
-description: Répondre aux questions d'analyse sur les usages MathAData dans enquete_usages_2026, y compris les croisements site–Capytale et les demandes nominatives internes. Utiliser cette skill dès qu'une demande mentionne des profs, usages, activités, classes, formations, canaux, retours, cohortes, données Payload/Capytale, noms ou e-mails.
+description: Répondre aux questions d'analyse sur les usages MathAData dans enquete_usages_2026, y compris URLR/Basthon, les croisements site–Capytale et les demandes nominatives internes. Utiliser cette skill dès qu'une demande mentionne des profs, usages, activités, classes, formations, canaux, retours, cohortes, données Payload/Capytale/URLR, noms ou e-mails.
 ---
 
 # Analyse des usages MathAData
@@ -24,9 +24,10 @@ faire sortir de données personnelles du périmètre local autorisé.
   canoniques `transverse/data/profiles_teacher*.csv`, `usage-capytale/data/{usages_enriched,sessions,
   teachers}.csv`, l'appariement pseudonymisé `site-vers-classe/data/match_candidates.csv`, l'entrée
   brute `public/data/capytale_fresh_*.csv` (schéma : `enquete_usages_2026/DONNEES_BRUTES_CAPYTALE.md`),
-  et tous les `facts_*.json`. La plupart des questions Capytale, canal, formation, profondeur et
-  rétention se répondent **sans** le snapshot (canal/formation sont **pré-calculés** dans
-  `profiles_teacher.csv`).
+  les extractions URLR `public/data/urlr_{links,daily,hourly,bursts}_*.csv`, la table canonique
+  `usage-urlr/data/sessions.csv` et tous les `facts_*.json`. La plupart des questions Capytale,
+  URLR, canal, formation, profondeur et rétention se répondent **sans** le snapshot
+  (canal/formation sont **pré-calculés** dans `profiles_teacher.csv`).
 - **Avec PII, strictement local** : le snapshot Payload (noms/prénoms/e-mails) n'est **pas** dans le
   clone. Toute question nominative (noms, e-mails) ou tout nouveau croisement individuel l'exige.
   S'il est absent, ne pas inventer : indiquer qu'il manque et renvoyer à
@@ -88,6 +89,14 @@ faire sortir de données personnelles du périmètre local autorisé.
   absence par une hypothèse silencieuse.
 - Ne jamais présenter un appariement nominatif site–Capytale comme certain. Séparer les résultats
   mesurés sur le site des résultats issus d'un appariement A/B.
+- Pour URLR, lire en priorité `usage-urlr/data/facts_urlr*.json`, jamais recalculer les visiteurs
+  uniques en sommant les heures ou les jours. Une taille URLR se nomme
+  `n_visiteurs_uniques_urlr`, jamais `n_eleves`.
+- Les modes historiques `compatible_remplacement` et `compatible_depannage` sont des indices
+  temporels nationaux, jamais une attribution certaine à une classe. La sensibilité ±1 h reste
+  séparée de la classification stricte.
+- Une attribution prospective URLR au niveau professeur exige une copie candidate unique et un
+  appariement individuel site–Capytale A/B. Ne jamais utiliser `proxy_etab`.
 - Ne jamais produire une liste de noms à partir de `proxy_etab`. Un proxy peut soutenir un chiffre
   agrégé, pas identifier le collègue concerné.
 

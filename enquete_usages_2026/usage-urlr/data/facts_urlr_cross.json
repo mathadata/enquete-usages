@@ -1,0 +1,122 @@
+{
+ "_meta": {
+  "common_start": "2025-12-25T14:00:00+01:00",
+  "common_end": "2026-06-20T00:00:00+02:00",
+  "common_end_exclusive": true,
+  "common_last_date": "2026-06-19",
+  "scope": "six activités mappées; comparaison agrégée, sans addition des personnes"
+ },
+ "urlr_sessions": 202,
+ "capytale_sessions": 356,
+ "exact_temporal_overlaps": 23,
+ "comparison_by_activity": [
+  {
+   "mathadata_id": "3515488",
+   "mathadata_title": "MathAData - Équation réduite de droite pour la classification d'images de chiffres - 2nde",
+   "urlr_sessions_estimees": 55,
+   "urlr_clics": 367,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 159,
+   "urlr_usage_classe_estime": 7,
+   "urlr_seances_riches_estimees": 3,
+   "capytale_sessions": 58,
+   "capytale_eleves_lignes": 720,
+   "capytale_usage_classe": 39,
+   "capytale_seances_riches": 34,
+   "modes_urlr": {
+    "compatible_remplacement": 6,
+    "compatible_depannage": 2,
+    "indetermine": 47
+   }
+  },
+  {
+   "mathadata_id": "3518185",
+   "mathadata_title": "MathAData - Statistiques pour la classification d'images de chiffres- 2nde",
+   "urlr_sessions_estimees": 92,
+   "urlr_clics": 580,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 184,
+   "urlr_usage_classe_estime": 5,
+   "urlr_seances_riches_estimees": 2,
+   "capytale_sessions": 137,
+   "capytale_eleves_lignes": 1382,
+   "capytale_usage_classe": 71,
+   "capytale_seances_riches": 57,
+   "modes_urlr": {
+    "compatible_remplacement": 4,
+    "compatible_depannage": 9,
+    "indetermine": 79
+   }
+  },
+  {
+   "mathadata_id": "5862412",
+   "mathadata_title": "MathAData - Droite et produit scalaire pour la classification d'images - 1ere",
+   "urlr_sessions_estimees": 9,
+   "urlr_clics": 20,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 9,
+   "urlr_usage_classe_estime": 0,
+   "urlr_seances_riches_estimees": 0,
+   "capytale_sessions": 58,
+   "capytale_eleves_lignes": 255,
+   "capytale_usage_classe": 10,
+   "capytale_seances_riches": 8,
+   "modes_urlr": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 0,
+    "indetermine": 9
+   }
+  },
+  {
+   "mathadata_id": "6659633",
+   "mathadata_title": "MathAData- Géométrie repérée, milieu, distance, pour la classification d'images de chiffres - 2nde",
+   "urlr_sessions_estimees": 10,
+   "urlr_clics": 47,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 13,
+   "urlr_usage_classe_estime": 0,
+   "urlr_seances_riches_estimees": 0,
+   "capytale_sessions": 25,
+   "capytale_eleves_lignes": 344,
+   "capytale_usage_classe": 16,
+   "capytale_seances_riches": 14,
+   "modes_urlr": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 0,
+    "indetermine": 10
+   }
+  },
+  {
+   "mathadata_id": "6944347",
+   "mathadata_title": "MathAData - Statistiques pour surveiller la santé de foetus - 2nde",
+   "urlr_sessions_estimees": 23,
+   "urlr_clics": 179,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 25,
+   "urlr_usage_classe_estime": 0,
+   "urlr_seances_riches_estimees": 0,
+   "capytale_sessions": 60,
+   "capytale_eleves_lignes": 421,
+   "capytale_usage_classe": 23,
+   "capytale_seances_riches": 17,
+   "modes_urlr": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 2,
+    "indetermine": 21
+   }
+  },
+  {
+   "mathadata_id": "8790616",
+   "mathadata_title": "MathAData - Équation cartésienne et vecteur directeur pour la classification d'images de chiffres - 2nde",
+   "urlr_sessions_estimees": 13,
+   "urlr_clics": 16,
+   "urlr_visiteurs_uniques_sommes_non_dedupliquees": 14,
+   "urlr_usage_classe_estime": 0,
+   "urlr_seances_riches_estimees": 0,
+   "capytale_sessions": 18,
+   "capytale_eleves_lignes": 300,
+   "capytale_usage_classe": 16,
+   "capytale_seances_riches": 14,
+   "modes_urlr": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 0,
+    "indetermine": 13
+   }
+  }
+ ]
+}

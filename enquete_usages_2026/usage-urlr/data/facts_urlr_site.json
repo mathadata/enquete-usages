@@ -1,0 +1,123 @@
+{
+ "_meta": {
+  "snapshot": "2026-06-20T10-37-24-905Z",
+  "tracking_start_existing": "2025-11-27",
+  "short_link_tracking": "prospectif; aucun backfill",
+  "privacy": "sortie agrégée; aucun site_id, nom, email ou identifiant professeur"
+ },
+ "by_activity": [
+  {
+   "mathadata_id": "3515488",
+   "mathadata_title": "MathAData - Équation réduite de droite pour la classification d'images de chiffres - 2nde",
+   "public": false,
+   "module_views": 2023,
+   "module_view_users": 288,
+   "module_view_sessions": 1493,
+   "capytale_clicks": 237,
+   "capytale_click_users": 122,
+   "basthon_direct_clicks": 82,
+   "basthon_direct_users": 55,
+   "basthon_direct_anonymous": 8,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  },
+  {
+   "mathadata_id": "3518185",
+   "mathadata_title": "MathAData - Statistiques pour la classification d'images de chiffres- 2nde",
+   "public": true,
+   "module_views": 3747,
+   "module_view_users": 305,
+   "module_view_sessions": 2996,
+   "capytale_clicks": 598,
+   "capytale_click_users": 116,
+   "basthon_direct_clicks": 311,
+   "basthon_direct_users": 42,
+   "basthon_direct_anonymous": 253,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  },
+  {
+   "mathadata_id": "5862412",
+   "mathadata_title": "MathAData - Droite et produit scalaire pour la classification d'images - 1ere",
+   "public": false,
+   "module_views": 1189,
+   "module_view_users": 207,
+   "module_view_sessions": 946,
+   "capytale_clicks": 102,
+   "capytale_click_users": 58,
+   "basthon_direct_clicks": 33,
+   "basthon_direct_users": 22,
+   "basthon_direct_anonymous": 3,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  },
+  {
+   "mathadata_id": "6659633",
+   "mathadata_title": "MathAData- Géométrie repérée, milieu, distance, pour la classification d'images de chiffres - 2nde",
+   "public": false,
+   "module_views": 904,
+   "module_view_users": 162,
+   "module_view_sessions": 647,
+   "capytale_clicks": 103,
+   "capytale_click_users": 60,
+   "basthon_direct_clicks": 36,
+   "basthon_direct_users": 28,
+   "basthon_direct_anonymous": 3,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  },
+  {
+   "mathadata_id": "6944347",
+   "mathadata_title": "MathAData - Statistiques pour surveiller la santé de foetus - 2nde",
+   "public": false,
+   "module_views": 1285,
+   "module_view_users": 217,
+   "module_view_sessions": 976,
+   "capytale_clicks": 117,
+   "capytale_click_users": 77,
+   "basthon_direct_clicks": 41,
+   "basthon_direct_users": 27,
+   "basthon_direct_anonymous": 3,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  },
+  {
+   "mathadata_id": "8790616",
+   "mathadata_title": "MathAData - Équation cartésienne et vecteur directeur pour la classification d'images de chiffres - 2nde",
+   "public": false,
+   "module_views": 664,
+   "module_view_users": 151,
+   "module_view_sessions": 528,
+   "capytale_clicks": 68,
+   "capytale_click_users": 45,
+   "basthon_direct_clicks": 11,
+   "basthon_direct_users": 6,
+   "basthon_direct_anonymous": 1,
+   "basthon_short_modal_opens": 0,
+   "basthon_short_copies": 0
+  }
+ ],
+ "totals": {
+  "module_views": 9812,
+  "capytale_clicks": 1225,
+  "basthon_direct_clicks": 514,
+  "basthon_short_modal_opens": 0,
+  "basthon_short_copies": 0
+ },
+ "future_attribution": {
+  "attributed_sessions": 0,
+  "copy_confidence": {
+   "A": 0,
+   "B": 0
+  },
+  "match_confidence": {
+   "A": 0,
+   "B": 0
+  },
+  "modes": {
+   "depannage_infere": 0,
+   "remplacement_infere": 0,
+   "indetermine": 0
+  }
+ }
+}

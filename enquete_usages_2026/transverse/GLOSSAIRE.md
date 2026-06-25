@@ -9,7 +9,8 @@
 > Implémenté par [`transverse/build_profiles.py`](build_profiles.py) (couche de calcul
 > canonique par *prof × année*). Toute nouvelle variable dérivée doit naître là.
 
-Extraction de référence : **Capytale 2026-06-19**, **Payload mathadata.fr 2026-06-20**.
+Extractions de référence : **Capytale 2026-06-19**, **Payload mathadata.fr 2026-06-20**,
+**URLR 2026-06-25**.
 
 ---
 
@@ -28,6 +29,12 @@ en aval reste anonyme. D'où l'**appariement individuel inféré** (signaux A/B/
 **Conséquence cardinale** : selon la variable, le « sujet » est observé dans un monde, l'autre, ou
 les deux. Chaque définition ci-dessous précise **dans quel monde elle est mesurée** et son **statut**
 (mesuré / estimé).
+
+Une troisième source, **URLR**, observe uniquement des **volumes agrégés d'ouverture de liens courts**
+vers les activités sans compte (actuellement Basthon). Elle n'ajoute pas un troisième monde
+d'identités : aucun visiteur, prof, établissement ou événement individuel n'est disponible. Elle
+peut être rapprochée des autres sources **au grain de l'activité seulement**, jamais au grain d'une
+personne.
 
 ---
 
@@ -78,6 +85,39 @@ Toutes les dates sont converties en **Europe/Paris** avant calcul. Trois années
   - **EXCLURE des KPI** : 9 comptes site `exclude_from_analytics` (équipe/test).
   - **ISOLER (hub fondateur)** : `cfcd2084…` (= MD5 "0"), 404 élèves sur **14 établissements** —
     compte-maître du réseau pilote, jamais un prof local. Sorti des analyses de profils.
+
+### Métriques URLR (source agrégée, sans personne)
+
+- **Lien URLR** = un lien court identifié par son UUID et son code public, redirigeant vers une
+  activité MathAData sans compte.
+- **Clic URLR** = valeur `clicks` renvoyée par l'API URLR sur une fenêtre temporelle donnée. Ce n'est
+  ni un prof, ni un élève, ni une séance : une même personne peut cliquer plusieurs fois.
+- **Visite unique URLR** = valeur `unique_visits` calculée par URLR **dans la fenêtre demandée**.
+  Cette métrique n'est pas additive : la somme des uniques quotidiens n'est pas l'unique mensuel ou
+  total.
+- **Scan URLR** = valeur `scans` renvoyée séparément pour les ouvertures issues d'un QR code.
+- **Jour URLR** = journée civile en `Europe/Paris`. Les tables quotidiennes omettent les jours sans
+  `visit`, `click` ni `scan`.
+- **Heure URLR** = heure civile en `Europe/Paris`, granularité temporelle maximale documentée par
+  URLR. Une heure sans `visit`, `click` ni `scan` est omise.
+- **Séance Basthon estimée** = run maximal d'heures actives du même `mathadata_id` dont les débuts
+  successifs sont espacés de **< 3 h**. Sa taille est toujours nommée
+  `n_visiteurs_uniques_urlr` : URLR la recalcule sur la fenêtre complète. C'est un proxy de
+  navigateurs participants, jamais un nombre d'élèves mesuré.
+- **Remplacement compatible** = séance Basthon estimée avec **≥ 5 visiteurs uniques URLR** et
+  aucune séance Capytale simultanée de même activité. Statut **estimé**, non attribué à une classe.
+- **Dépannage compatible** = séance Basthon estimée avec **1 à 4 visiteurs uniques URLR** et
+  exactement une séance Capytale simultanée de même activité comptant **≥ 5 élèves**. Statut
+  **estimé**, non attribué à une classe.
+- **Mode URLR indéterminé** = toute autre configuration, notamment grande salve URLR parallèle à
+  Capytale, plusieurs séances Capytale candidates ou petite salve sans Capytale.
+- **Remplacement/dépannage inféré** = statut prospectif au niveau professeur, calculable seulement
+  après une copie de lien court attribuée et un appariement individuel site–Capytale de confiance
+  A/B. Le proxy établissement est interdit. Seuls les agrégats sont publiables.
+
+La couverture débute à la création des liens observés (**25 décembre 2025** dans l'extraction de
+référence). L'API disponible ne fournit ni IP, ni identité, ni journal de clics individuel. Chaque
+lien URLR est rattaché à un `mathadata_id` canonique via `urlr_activity_mapping.csv`.
 
 ---
 

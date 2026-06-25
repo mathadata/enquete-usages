@@ -1,8 +1,9 @@
 # Donnée brute Capytale — schéma & provenance
 
 Source d'usage **en classe**, **anonyme** (comptes ENT pseudonymisés), couvrant **2023→2026**.
-C'est l'une des deux entrées brutes de l'enquête (l'autre = snapshot Payload, nominatif & local ;
-cf. [`MISE_A_JOUR_DONNEES.md`](MISE_A_JOUR_DONNEES.md)).
+C'est l'une des trois entrées brutes de l'enquête (avec le snapshot Payload, nominatif & local, et
+les statistiques URLR, anonymes & agrégées ; cf.
+[`MISE_A_JOUR_DONNEES.md`](MISE_A_JOUR_DONNEES.md)).
 
 - **Fichier de référence (versionné)** : `public/data/capytale_fresh_20260619.csv` (extraction du 19/06/2026).
 - **PII** : aucune. Les comptes sont des identifiants pseudonymisés (hash). Versionnable sans risque.

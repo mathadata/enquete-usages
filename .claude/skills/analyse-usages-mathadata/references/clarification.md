@@ -17,6 +17,13 @@ Avant tout calcul, identifier :
    appariement site–Capytale est requis.
 8. **Provenance** — extraction et tables utilisées.
 
+Pour URLR/Basthon, préciser en plus :
+
+- clic, visite unique de fenêtre ou séance Basthon estimée ;
+- taille `n_visiteurs_uniques_urlr` et non nombre d'élèves ;
+- classification stricte ou sensibilité ±1 h ;
+- compatibilité historique agrégée, ou attribution prospective A/B après copie du lien court.
+
 ## Quand demander une précision
 
 Demander une seule clarification concise quand au moins deux lectures plausibles changent la
