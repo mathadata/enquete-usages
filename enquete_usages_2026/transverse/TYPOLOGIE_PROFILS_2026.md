@@ -5,7 +5,11 @@
 **Corpus** : 2 715 comptes site (amont, nominatif) · 401 comptes Capytale engagés dont 224 ont enseigné · 5 854 élèves distincts
 **Méthode** : **règles déterministes** (5 archétypes par seuils explicites, cf. `build_master.py` — *pas* un k-means) → 5 archétypes ; puis enquête croisée (10 questions, chacune testée puis **vérifiée de façon adversariale** par un second analyste indépendant) reliant les profils à la rétention, au parcours amont, à la formation, à la géographie et aux trajectoires pluriannuelles.
 
-> Cette note prolonge et **corrige** [`ANALYSE_PATTERNS_USAGE.md`](../../ANALYSE_PATTERNS_USAGE.md) (4 nov. 2025). Elle ne se contente pas de décrire les profils : elle s'en sert comme **grille de lecture** pour répondre à deux questions — *qui atteint la classe ?* et *pourquoi la plupart ne reviennent-ils pas ?*
+> Cette note prolonge et **corrige**
+> [`ANALYSE_PATTERNS_USAGE_nov25.md`](../../legacy/dashboard-2025/syntheses/ANALYSE_PATTERNS_USAGE_nov25.md)
+> (4 nov. 2025, document historique non canonique). Elle ne se contente pas de décrire les profils :
+> elle s'en sert comme **grille de lecture** pour répondre à deux questions — *qui atteint la
+> classe ?* et *pourquoi la plupart ne reviennent-ils pas ?*
 >
 > **Pendant** : [`RAPPORT_SEANCES_2026.md`](RAPPORT_SEANCES_2026.md) — « la séance » (comment l'outil se vit en classe : scénarios, rythmes, cas). Ici « le prof ».
 

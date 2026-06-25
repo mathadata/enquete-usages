@@ -19,7 +19,8 @@ enquete_usages_2026/
 > unique de toutes les définitions. La couche de calcul canonique des profils est
 > [`transverse/build_profiles.py`](transverse/build_profiles.py). Playbook complet : `../CLAUDE.md`.
 
-> 🔁 **Reproduire / vérifier** : `bash rebuild_all.sh` régénère toute la chaîne puis lance les
+> 🔁 **Reproduire / vérifier depuis la racine du dépôt** :
+> `bash enquete_usages_2026/rebuild_all.sh` régénère toute la chaîne puis lance les
 > **contrats** (`transverse/check_contracts.py`). Constantes & populations canoniques centralisées dans
 > [`enquete_common.py`](enquete_common.py). Les contrats tournent aussi en **pre-commit** (`git config
 > core.hooksPath enquete_usages_2026/hooks`) et en **CI GitHub** (un commit qui casse une définition est refusé).
@@ -42,7 +43,15 @@ Reconstitue le **pipeline complet** (notoriété → compte → formation → Ca
 - Pipeline : `build_payload_canonical.py` → `compute_cross_facts.py` → `build_formation_cohorts.py` → `match_individuals.py` → `make_charts_volet2.py` (+ workflows). Source de vérité : `site-vers-classe/data/facts_cross.json` & `facts_formation.json`.
 
 ## [Transverse — Typologie des profils](transverse/) (`transverse/`)
-Refonte **data-driven et vérifiée** de la sociologie des usages (prolonge et corrige `ANALYSE_PATTERNS_USAGE.md` du 4 nov. 2025). Règles déterministes (5 archétypes, cf. `build_master.py`) sur les 223 profs ayant enseigné (hub fondateur isolé), puis **enquête croisée** (10 questions investiguées par agents + vérification adversariale) répondant à deux questions : *qui atteint la classe ?* et *pourquoi la plupart ne reviennent pas ?* Faits saillants : **paradoxe du déployeur** (atteint une vraie classe, 0/41 reviennent), rétention 34 % (cohorte éligible classe ≥5), prédicteurs « dose année 1 », nuls confirmés (collectif intra-établissement, « effet formation » = artefact de composition).
+Refonte **data-driven et vérifiée** de la sociologie des usages (prolonge et corrige le document
+historique non canonique
+[`ANALYSE_PATTERNS_USAGE_nov25.md`](../legacy/dashboard-2025/syntheses/ANALYSE_PATTERNS_USAGE_nov25.md)).
+Règles déterministes (5 archétypes, cf. `build_master.py`) sur les 223 profs ayant enseigné (hub
+fondateur isolé), puis **enquête croisée** (10 questions investiguées par agents + vérification
+adversariale) répondant à deux questions : *qui atteint la classe ?* et *pourquoi la plupart ne
+reviennent pas ?* Faits saillants : **paradoxe du déployeur** (atteint une vraie classe, 0/41
+reviennent), rétention 34 % (cohorte éligible classe ≥5), prédicteurs « dose année 1 », nuls
+confirmés (collectif intra-établissement, « effet formation » = artefact de composition).
 - Rapport : [`transverse/TYPOLOGIE_PROFILS_2026.md`](transverse/TYPOLOGIE_PROFILS_2026.md)
 - Page web (canonique) : `transverse/dashboard_typologie.html` → https://mathadata.github.io/enquete-usages/typologie.html
 - Pipeline : `build_master.py` (table maître) → `workflow_typologie.js` (enquête + vérif) → charts. Sources de vérité : `transverse/data/facts_typologie.json`, `facts_investigation.json`, `master_teachers.csv` (pseudonymisé). Graphiques : `transverse/charts/`.

@@ -34,14 +34,13 @@ from datetime import timedelta
 import os as _os
 _ENQ=_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))  # enquete_usages_2026
 _RT=_os.path.dirname(_ENQ)                                           # racine du repo
-_WS=_os.path.dirname(_RT)                                            # parent (contient mathadata-website)
 import sys as _sys; _sys.path.insert(0,_ENQ); import enquete_common as K  # socle partagé
 ROOT = _RT
 V1   = f"{ROOT}/enquete_usages_2026/usage-capytale/data"
 V2   = f"{ROOT}/enquete_usages_2026/site-vers-classe/data"
 OUT  = f"{ROOT}/enquete_usages_2026/transverse/data"
 SCRATCH=_os.environ.get("MATHADATA_LOCAL", f"{_ENQ}/_local")  # ex-scratch session -> dossier local stable (gitignore)
-SNAP = _os.environ.get("MATHADATA_SNAPSHOT", f"{_WS}/mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z")
+SNAP = K.snapshot()
 os.makedirs(OUT, exist_ok=True)
 
 DEMO, PIO = K.DEMO, K.PIO                                   # socle partagé (GLOSSAIRE §2)

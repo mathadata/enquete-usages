@@ -1,4 +1,4 @@
-# Définitions de source — VOLET 2 : croisement mathadata.fr × Capytale (extraction 2026-06-20)
+# Définitions de source — VOLET 2 : croisement mathadata.fr × Capytale
 
 > ⚠️ **Le sens des termes transverses (profondeur, canal, formation, rétention, niveau) est
 > centralisé dans [`../transverse/GLOSSAIRE.md`](../transverse/GLOSSAIRE.md)** (source de vérité unique).
@@ -16,8 +16,11 @@ Ce volet relie deux mondes sans clé commune :
 - **mathadata.fr** (parcours amont, **nominatif**, snapshot Payload) — nouveau.
 
 ## Fichiers
-- Snapshot site (PII, **gitignore**, ne jamais committer) : `mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z/`
-  (`users.json` 2724, `sessions.json` 25908, `events.json` 24683, `consultation_rss.json` 13197 ; `README.md` = dictionnaire).
+- Snapshot site (PII, **gitignore**, ne jamais committer) :
+  `mathadata-website/private/payload-snapshots/<timestamp>/`. Les chiffres versionnés actuels ont été
+  établis avec l'extraction du 20 juin 2026 (`users.json` 2724, `sessions.json` 25908,
+  `events.json` 24683, `consultation_rss.json` 13197 ; `README.md` = dictionnaire).
+  Les scripts prennent le snapshot horodaté le plus récent, sauf si `MATHADATA_SNAPSHOT` est défini.
 - Usage Capytale : `public/data/capytale_fresh_20260619.csv` (cf. Volet 1).
 - Sorties versionnées (agrégats, **sans PII**) : `enquete_usages_2026/site-vers-classe/data/`
   - `facts_cross.json` — **source de vérité** des chiffres du croisement.

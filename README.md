@@ -17,8 +17,12 @@ python3 enquete_usages_2026/transverse/check_contracts.py
 bash enquete_usages_2026/rebuild_all.sh
 ```
 
+Les contrats suffisent pour vérifier un clone. La reconstruction fonctionne sans données privées :
+les étapes site × Capytale sont alors sautées et les faits versionnés restent disponibles.
+
 Les étapes nécessitant des données nominatives utilisent uniquement un snapshot Payload local,
-jamais versionné. Voir
+jamais versionné. Le pipeline sélectionne le snapshot horodaté le plus récent dans le dépôt voisin ;
+définir `MATHADATA_SNAPSHOT` permet de figer explicitement une extraction. Voir
 [`enquete_usages_2026/MISE_A_JOUR_DONNEES.md`](enquete_usages_2026/MISE_A_JOUR_DONNEES.md).
 
 ## Dépôts liés

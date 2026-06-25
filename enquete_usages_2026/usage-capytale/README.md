@@ -7,7 +7,7 @@ Enquête approfondie sur le déploiement et les usages réels de MathAData, à p
 | Fichier | Contenu |
 |---|---|
 | **[RAPPORT_ENQUETE_USAGES.md](RAPPORT_ENQUETE_USAGES.md)** | **Rapport textuel complet** — 12 sections argumentées, tableaux, pourcentages, recommandations. |
-| **dashboard.html** | Tableau de bord visuel (publié comme Artifact claude.ai, graphiques SVG). |
+| **dashboard.html** | Source du tableau de bord visuel publié sur [GitHub Pages](https://mathadata.github.io/enquete-usages/volet1.html). |
 | `charts/` | 14 graphiques PNG (croissance, comportement, conversion, géo, IPS…). |
 | [DEFINITIONS.md](DEFINITIONS.md) | Définitions canoniques et règles métier (cohérence des calculs). |
 | `data/facts.json` | Tous les chiffres calculés (source de vérité). |
@@ -17,14 +17,14 @@ Enquête approfondie sur le déploiement et les usages réels de MathAData, à p
 ## Pipeline reproductible
 
 ```bash
-# 1) données fraîches (déjà dans public/data/capytale_fresh_20260619.csv)
-# 2) construction des tables canoniques
-python3 build_canonical.py
-# 3) calcul de tous les faits -> data/facts.json
-python3 compute_facts.py
-# 4) graphiques -> charts/
-python3 make_charts.py
+# Depuis la racine du dépôt :
+python3 enquete_usages_2026/usage-capytale/build_canonical.py
+python3 enquete_usages_2026/usage-capytale/compute_facts.py
+python3 enquete_usages_2026/usage-capytale/make_charts.py
 ```
+
+Pour reconstruire l'ensemble de l'enquête avec les contrats :
+`bash enquete_usages_2026/rebuild_all.sh`.
 
 ## Principaux enseignements
 

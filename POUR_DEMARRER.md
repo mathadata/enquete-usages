@@ -23,8 +23,16 @@ python3 -m pip install -r requirements.txt
 git config core.hooksPath enquete_usages_2026/hooks
 ```
 
-Claude lit automatiquement [`CLAUDE.md`](CLAUDE.md) et la skill
-`.claude/skills/analyse-usages-mathadata/`.
+Claude Code lit [`CLAUDE.md`](CLAUDE.md) à la racine et découvre la skill projet
+`.claude/skills/analyse-usages-mathadata/`. Pour forcer explicitement son usage, lancer :
+
+```text
+/analyse-usages-mathadata
+```
+
+Puis poser la question dans la même conversation. Une demande qui mentionne les usages,
+professeurs, formations, cohortes, Capytale ou Payload doit également déclencher cette skill
+selon sa description.
 
 ## Cas 1 — question statistique non nominative
 

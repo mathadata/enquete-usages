@@ -7,18 +7,16 @@ Les dashboards de l'enquête sont diffusés à **un seul endroit** : **GitHub Pa
 > On n'édite **jamais** une copie publiée (gh-pages) directement.
 > On édite la source, puis on **régénère** avec `publish_pages.sh`.
 
-> ℹ️ **Les anciens artifacts claude.ai sont retirés (24 juin 2026).** Pour éviter toute
-> divergence (deux surfaces à maintenir en parallèle), on ne garde que GitHub Pages. Les 4 UUID
-> historiques (Typologie/Volet 1/Volet 2/Flux) ont été remplacés par des **pages de redirection**
-> vers GitHub Pages — **ne plus jamais y republier de dashboard**. Pour les supprimer définitivement :
-> ouvrir chaque artifact sur claude.ai → *Delete* (cf. liste des UUID en bas).
+> ℹ️ **Les anciens Artifacts Claude sont retirés depuis le 24 juin 2026.** Ils ne font plus partie
+> du processus de publication et ne doivent pas être recréés. Les anciennes GitHub Pages du dépôt
+> dashboard redirigent durablement vers les URL canoniques ci-dessous.
 
 ## Registre des pages
 
 | Page | Analyse | Fichier source (repo) | GitHub Pages |
 |---|---|---|---|
 | Accueil | portail | `enquete_usages_2026/pages/index.html` | [/](https://mathadata.github.io/enquete-usages/) |
-| **Synthèse** | Capstone transversal (à lire en premier) | `enquete_usages_2026/transverse/dashboard_synthese.html` | [/synthese.html](https://mathadata.github.io/enquete-usages/synthese.html) |
+| **Synthèse** | Synthèse transversale (à lire en premier) | `enquete_usages_2026/transverse/dashboard_synthese.html` | [/synthese.html](https://mathadata.github.io/enquete-usages/synthese.html) |
 | **Typologie** | Cinq façons d'enseigner (profils, rétention) | `enquete_usages_2026/transverse/dashboard_typologie.html` | [/typologie.html](https://mathadata.github.io/enquete-usages/typologie.html) |
 | **Séances** | Anatomie d'une séance (scénarios, rythmes, cas) | `enquete_usages_2026/transverse/dashboard_seances.html` | [/seances.html](https://mathadata.github.io/enquete-usages/seances.html) |
 | **Volet 1** | Déploiement réel en classe (Capytale) | `enquete_usages_2026/usage-capytale/dashboard.html` | [/volet1.html](https://mathadata.github.io/enquete-usages/volet1.html) |
@@ -52,13 +50,3 @@ C'est tout : **une seule surface, pas de double publication**.
   une source (garde-fou anti-fuite de données personnelles).
 - Pour ajouter une nouvelle page : ajouter le fichier source, une ligne dans le tableau `MAP` de
   `publish_pages.sh`, une carte dans `pages/index.html`, et une ligne dans ce registre.
-
-## Artifacts claude.ai retirés (UUID historiques)
-
-Remplacés par des pages de redirection le 24 juin 2026. Pour suppression définitive (optionnel),
-ouvrir chacun sur claude.ai → *Delete* :
-
-- Typologie : `0b79ed9b-8e7e-4ecf-b7dc-f4f3aa86ea83`
-- Volet 1 : `f4a6cd35-dc33-46fd-bd08-e121a0d1d517`
-- Volet 2 : `79e26dd8-eaf0-422b-86e3-5dd69ba6afa8`
-- Flux : `8ef1d8f4-4dd0-44a1-ae7c-46102b697606`

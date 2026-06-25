@@ -37,7 +37,8 @@ Deux sources **disjointes**, sans clé commune directe :
 - **Capytale** (`public/data/capytale_fresh_20260619.csv`) — usage en classe, **anonyme** (MD5).
   Couvre 2023→2026.
 - **mathadata.fr / Payload** — parcours amont, **nominatif**, snapshot **local & gitignore** dans
-  `../mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z/` (repo voisin). Le
+  `../mathadata-website/private/payload-snapshots/<timestamp>/` (repo voisin). Par défaut, les scripts
+  prennent le dossier horodaté le plus récent ; définir `MATHADATA_SNAPSHOT` fige une extraction. Le
   tracking des clics ne commence que **~27 nov 2025** (avant : clics invisibles → ne pas conclure
   « pas d'intérêt »).
 
@@ -96,8 +97,8 @@ JSON **strict** (NaN/Inf réellement rejetés), invariants population/rétention
 `✅ tous les contrats sont respectés`.
 - **Exécutés automatiquement** : (a) **hook pre-commit** versionné — installer une fois :
   `git config core.hooksPath enquete_usages_2026/hooks` (un commit qui casse un contrat est refusé) ;
-  (b) **CI GitHub** — modèle prêt dans `enquete_usages_2026/hooks/github-workflow-contrats.yml.template`,
-  à copier dans `.github/workflows/` côté mainteneur (le push de workflows exige le scope OAuth `workflow`).
+  (b) **CI GitHub active** dans `.github/workflows/contrats-enquete.yml`. Le fichier
+  `enquete_usages_2026/hooks/github-workflow-contrats.yml.template` est conservé comme modèle de secours.
 
 ⚠️ **Les dashboards `.html` embarquent leurs chiffres en dur** (HTML autonome, CSP-safe : pas de
 `fetch` possible). Deux régimes :
@@ -111,8 +112,8 @@ JSON **strict** (NaN/Inf réellement rejetés), invariants population/rétention
 ## 6. Publication (ne jamais diverger)
 
 Voir **[`enquete_usages_2026/PUBLISH.md`](enquete_usages_2026/PUBLISH.md)**. **Une seule surface :
-GitHub Pages** (les anciens artifacts claude.ai sont **retirés** depuis le 24/06/2026 → pages de
-redirection, ne plus y republier). Source de vérité = les fichiers HTML du repo ; on édite la source
+GitHub Pages**. Les anciens Artifacts Claude ne sont plus maintenus depuis le 24 juin 2026.
+Source de vérité = les fichiers HTML du repo ; on édite la source
 puis on régénère **gh-pages** (`bash enquete_usages_2026/publish_pages.sh`) — jamais l'inverse. Pas de
 dérive possible : le contenu gh-pages vit dans le repo (diffable contre la source). Le script **refuse**
 de publier si un e-mail non-`mathadata.fr` apparaît dans une source.
@@ -211,4 +212,5 @@ Quand on te pose une question sur les données, **dans l'ordre** :
 | `transverse/data/facts_typologie.json`, `facts_investigation.json`, `facts_scenarios.json` | typologie & séances |
 
 **Entrées brutes** : `public/data/capytale_fresh_20260619.csv` (versionné) ; snapshot Payload
-**local & gitignore** (`../mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z/`).
+**local & gitignore** (`../mathadata-website/private/payload-snapshots/<timestamp>/`, ou chemin défini
+par `MATHADATA_SNAPSHOT`).

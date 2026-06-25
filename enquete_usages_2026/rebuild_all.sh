@@ -17,7 +17,7 @@
 # ---------------------------------------------------------------------------
 set -euo pipefail
 E="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"          # enquete_usages_2026/
-SNAP="${MATHADATA_SNAPSHOT:-$(cd "$E/../.." && pwd)/mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z}"
+SNAP="$(PYTHONPATH="$E" python3 -c 'import enquete_common as K; print(K.snapshot())')"
 LOCAL="${MATHADATA_LOCAL:-$E/_local}"
 CAPYTALE="${MATHADATA_CAPYTALE_CSV:-$E/../public/data/capytale_fresh_20260619.csv}"
 if [ ! -f "$CAPYTALE" ]; then
@@ -35,7 +35,7 @@ run usage-capytale/build_teachers_v2.py
 run usage-capytale/compute_facts.py
 
 echo "═══ 2. Croisé site × Capytale (snapshot Payload LOCAL requis) ═══"
-if [ -d "$SNAP" ]; then
+if [ -f "$SNAP/users.json" ]; then
   run site-vers-classe/build_payload_canonical.py
   run site-vers-classe/match_individuals.py
   run site-vers-classe/build_formation_cohorts.py

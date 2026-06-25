@@ -1,3 +1,6 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 export const meta = {
   name: 'volet2-formation-integration',
   description: 'Intègre les données de formation (codes/redemptions) : typologie des cohortes par nature, intention vs usage, vérification, ce qui change vs Volet 2 v1',
@@ -10,7 +13,17 @@ export const meta = {
 
 const REPO = process.env.MATHADATA_REPO_ROOT || process.cwd()
 const ROOT = `${REPO}/enquete_usages_2026`
-const SNAP = process.env.MATHADATA_SNAPSHOT || `${REPO}/../mathadata-website/private/payload-snapshots/2026-06-20T10-37-24-905Z`
+const SNAP_ROOT = path.resolve(REPO, '../mathadata-website/private/payload-snapshots')
+const SNAP = process.env.MATHADATA_SNAPSHOT || (
+  fs.existsSync(SNAP_ROOT)
+    ? fs.readdirSync(SNAP_ROOT, { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && /^\d{4}-\d{2}-\d{2}T/.test(entry.name))
+      .map(entry => path.join(SNAP_ROOT, entry.name))
+      .sort()
+      .at(-1)
+    : undefined
+)
+if (!SNAP) throw new Error('Aucun snapshot Payload trouvé ; définir MATHADATA_SNAPSHOT')
 const LOCAL = process.env.MATHADATA_LOCAL || `${ROOT}/_local`
 
 const CTX = `

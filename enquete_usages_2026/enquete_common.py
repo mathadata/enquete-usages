@@ -9,7 +9,7 @@ Import type (les scripts ont déjà un bootstrap `_ENQ = dirname(dirname(__file_
     import sys; sys.path.insert(0, _ENQ); import enquete_common as K
     DEMO, PIO = K.DEMO, K.PIO
 """
-import os, math
+import glob, os, math, re
 
 # ───────── chemins (dérivés de l'emplacement de CE fichier — jamais de /Users/... en dur) ─────────
 HERE = os.path.dirname(os.path.abspath(__file__))     # enquete_usages_2026/
@@ -21,9 +21,28 @@ V2 = os.path.join(HERE, "site-vers-classe", "data")
 TR = os.path.join(HERE, "transverse", "data")
 LOCAL = os.environ.get("MATHADATA_LOCAL", os.path.join(HERE, "_local"))   # tables de travail PII-adjacentes (gitignore)
 def snapshot():
-    """Dossier du snapshot Payload (local, PII). Override : env MATHADATA_SNAPSHOT."""
-    return os.environ.get("MATHADATA_SNAPSHOT",
-        os.path.join(WS, "mathadata-website", "private", "payload-snapshots", "2026-06-20T10-37-24-905Z"))
+    """Dossier du snapshot Payload (local, PII).
+
+    Priorité :
+    1. MATHADATA_SNAPSHOT, pour une reconstruction explicitement figée ;
+    2. le snapshot horodaté le plus récent dans le dépôt voisin mathadata-website ;
+    3. un chemin absent explicite, afin que les étapes privées soient sautées proprement.
+    """
+    explicit = os.environ.get("MATHADATA_SNAPSHOT")
+    if explicit:
+        return os.path.abspath(os.path.expanduser(explicit))
+
+    root = os.path.join(WS, "mathadata-website", "private", "payload-snapshots")
+    candidates = sorted(
+        (
+            path
+            for path in glob.glob(os.path.join(root, "*"))
+            if os.path.isdir(path)
+            and re.match(r"^\d{4}-\d{2}-\d{2}T", os.path.basename(path))
+        ),
+        reverse=True,
+    )
+    return candidates[0] if candidates else os.path.join(root, "__snapshot_absent__")
 
 def capytale_csv():
     """Extraction Capytale brute. Override : env MATHADATA_CAPYTALE_CSV."""

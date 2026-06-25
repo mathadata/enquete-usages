@@ -98,12 +98,13 @@ test -f "$SNAPSHOT/users.json"
 test -f "$SNAPSHOT/formation-codes.json"
 test -f "$SNAPSHOT/etablissements.json"
 
-MATHADATA_SNAPSHOT="$SNAPSHOT" \
+export MATHADATA_SNAPSHOT="$SNAPSHOT"
 bash enquete_usages_2026/rebuild_all.sh
 ```
 
-Le chemin explicite `MATHADATA_SNAPSHOT` est obligatoire pour une nouvelle extraction :
-plusieurs scripts ont encore un ancien snapshot daté comme valeur par défaut.
+Le chemin explicite `MATHADATA_SNAPSHOT` est recommandé pour garantir la reproductibilité d'une
+mise à jour. S'il est absent, le pipeline sélectionne automatiquement le dossier horodaté le plus
+récent dans `../mathadata-website/private/payload-snapshots/`.
 
 Le pipeline écrit ses tables de travail locales dans `enquete_usages_2026/_local/`,
 également ignoré par Git.
@@ -138,6 +139,9 @@ export MATHADATA_CAPYTALE_CSV="$PWD/public/data/capytale_fresh_<AAAAMMJJ>.csv"
 export MATHADATA_SNAPSHOT="/chemin/vers/mathadata-website/private/payload-snapshots/<timestamp>"
 bash enquete_usages_2026/rebuild_all.sh
 ```
+
+Conserver ces deux valeurs dans le journal de mise à jour ou le message de commit afin que
+l'extraction utilisée soit identifiable.
 
 Schéma des colonnes, endpoint, gestion du token et promotion durable comme nouvelle référence :
 [`DONNEES_BRUTES_CAPYTALE.md`](DONNEES_BRUTES_CAPYTALE.md).

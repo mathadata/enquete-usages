@@ -4,7 +4,8 @@ Croisement du parcours amont **nominatif** (mathadata.fr, snapshot Payload) avec
 
 ## Livrables
 - **`RAPPORT_VOLET2.md`** — rapport argumenté (résumé exécutif, 8 sections, insights transverses, recommandations, limites).
-- **`dashboard_volet2.html`** — page web compagnon (artefact publié). Auto-portante, graphiques SVG inline.
+- **`dashboard_volet2.html`** — source de la page web publiée sur
+  [GitHub Pages](https://mathadata.github.io/enquete-usages/volet2.html), auto-portante avec graphiques SVG inline.
 - **`DEFINITIONS_VOLET2.md`** — définitions canoniques, le pont de données, garde-fous.
 
 ## Pipeline (reproductible)
