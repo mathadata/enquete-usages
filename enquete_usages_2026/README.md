@@ -30,7 +30,10 @@ enquete_usages_2026/
 > [`MISE_A_JOUR_DONNEES.md`](MISE_A_JOUR_DONNEES.md).
 
 ## ★ [Synthèse finale](transverse/SYNTHESE_FINALE_2026.md) — à lire en premier
-**Synthèse réflexive transversale** croisant les 4 rapports : que conclure de 3 ans d'usage (Capytale × site) sur l'adoption, les profils, l'effet des formations, les dynamiques et les modes d'usage — et **comment déployer mieux en 2026-2027** (plus de profs *et* meilleur mode d'usage). Thèse : la **notoriété est acquise**, mais la **conversion** reste à gagner, à trois étages (formation→classe, classe→retour, essai→profondeur) ; la croissance est surtout organique, et les **mêmes gestes de la 1ʳᵉ année** (≥2 activités, vraie séance de 45 min) déterminent la durée. → [`transverse/SYNTHESE_FINALE_2026.md`](transverse/SYNTHESE_FINALE_2026.md)
+**Synthèse réflexive transversale** croisant les 4 analyses initiales : que conclure de 3 ans d'usage
+(Capytale × site) sur l'adoption, les profils, l'effet des formations, les dynamiques et les modes
+d'usage — et **comment déployer mieux en 2026-2027**. L'analyse URLR, ajoutée ensuite, documente le
+canal sans compte sans modifier les profils ni la rétention. → [`transverse/SYNTHESE_FINALE_2026.md`](transverse/SYNTHESE_FINALE_2026.md)
 
 ## [Volet 1 — Usage Capytale](usage-capytale/) (`usage-capytale/`)
 Que font les profs et les élèves **sur Capytale** (2023→2026) : croissance, comportements (test/enseigne), saisonnalité, géographie, IPS, taille de classe, rétention, modèle des comptes (401 engagés → 224 ont enseigné → 5 854 élèves).
@@ -50,6 +53,7 @@ depuis le 25 décembre 2025. Aucun visiteur, professeur, établissement ou évé
 n'est disponible. Des séances sont estimées à partir des heures actives, avec distinction entre
 remplacement compatible, dépannage compatible et cas indéterminé.
 - Rapport : [`usage-urlr/RAPPORT_USAGE_URLR.md`](usage-urlr/RAPPORT_USAGE_URLR.md).
+- Page web : `usage-urlr/dashboard_urlr.html` → https://mathadata.github.io/enquete-usages/urlr.html
 - Graphiques : `usage-urlr/charts/`.
 - Régénération : `python3 enquete_usages_2026/usage-urlr/make_charts.py`.
 - Schéma et provenance : [`DONNEES_BRUTES_URLR.md`](DONNEES_BRUTES_URLR.md).

@@ -24,6 +24,7 @@ declare -a MAP=(
   "$E/transverse/dashboard_seances.html:seances.html"
   "$E/transverse/dashboard_synthese.html:synthese.html"
   "$E/transverse/dashboard_flux_profs.html:flux.html"
+  "$E/usage-urlr/dashboard_urlr.html:urlr.html"
 )
 
 # garde-fou sécurité : refuser de publier si un email apparaît dans une source

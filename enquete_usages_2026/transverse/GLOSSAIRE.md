@@ -94,7 +94,16 @@ Toutes les dates sont converties en **Europe/Paris** avant calcul. Trois années
   ni un prof, ni un élève, ni une séance : une même personne peut cliquer plusieurs fois.
 - **Visite unique URLR** = valeur `unique_visits` calculée par URLR **dans la fenêtre demandée**.
   Cette métrique n'est pas additive : la somme des uniques quotidiens n'est pas l'unique mensuel ou
-  total.
+  total. L'API ne documente pas sa clé de déduplication ; URLR indique traiter les statistiques avec
+  des IP anonymisées. Dans un établissement derrière une IP/NAT commune, plusieurs participants
+  peuvent donc être comptés comme un seul unique. C'est une **borne basse technique**, jamais une
+  taille de classe fiable.
+- **Proxy collectif URLR par clics** = nombre de clics d'une séance Basthon estimée, utilisé en
+  analyse de sensibilité sous l'hypothèse que les participants rouvrent rarement le lien court.
+  C'est probablement plus informatif que `unique_visits` derrière un NAT d'établissement, mais ce
+  n'est toujours pas un nombre d'élèves : réouvertures, robots et autres usages restent possibles.
+  Les seuils `≥ 5/10/20 clics` sont **exploratoires** et ne remplacent pas les définitions
+  canoniques fondées sur les uniques.
 - **Scan URLR** = valeur `scans` renvoyée séparément pour les ouvertures issues d'un QR code.
 - **Jour URLR** = journée civile en `Europe/Paris`. Les tables quotidiennes omettent les jours sans
   `visit`, `click` ni `scan`.
@@ -102,15 +111,17 @@ Toutes les dates sont converties en **Europe/Paris** avant calcul. Trois années
   URLR. Une heure sans `visit`, `click` ni `scan` est omise.
 - **Séance Basthon estimée** = run maximal d'heures actives du même `mathadata_id` dont les débuts
   successifs sont espacés de **< 3 h**. Sa taille est toujours nommée
-  `n_visiteurs_uniques_urlr` : URLR la recalcule sur la fenêtre complète. C'est un proxy de
-  navigateurs participants, jamais un nombre d'élèves mesuré.
+  `n_visiteurs_uniques_urlr` : URLR la recalcule sur la fenêtre complète. C'est la métrique
+  d'unicité de la source, dont la méthode n'est pas documentée, jamais un nombre d'élèves mesuré.
 - **Remplacement compatible** = séance Basthon estimée avec **≥ 5 visiteurs uniques URLR** et
   aucune séance Capytale simultanée de même activité. Statut **estimé**, non attribué à une classe.
 - **Dépannage compatible** = séance Basthon estimée avec **1 à 4 visiteurs uniques URLR** et
   exactement une séance Capytale simultanée de même activité comptant **≥ 5 élèves**. Statut
   **estimé**, non attribué à une classe.
 - **Mode URLR indéterminé** = toute autre configuration, notamment grande salve URLR parallèle à
-  Capytale, plusieurs séances Capytale candidates ou petite salve sans Capytale.
+  Capytale, plusieurs séances Capytale candidates ou petite salve sans Capytale. Une petite salve
+  sans Capytale peut être un petit usage réel ou une classe sous-comptée par le NAT : la catégorie
+  signifie « non classable avec les données disponibles », pas « non scolaire ».
 - **Remplacement/dépannage inféré** = statut prospectif au niveau professeur, calculable seulement
   après une copie de lien court attribuée et un appariement individuel site–Capytale de confiance
   A/B. Le proxy établissement est interdit. Seuls les agrégats sont publiables.

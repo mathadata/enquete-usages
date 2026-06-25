@@ -108,6 +108,7 @@ def main():
                     "user_id": str(user),
                 })
 
+    direct_click_events = []
     for click in rss:
         user = relation_id(click.get("user"))
         if user is not None and str(user) in excluded:
@@ -122,6 +123,11 @@ def main():
                 activity[mid]["basthon_direct_clicks"] += 1
                 if user is not None:
                     activity[mid]["basthon_direct_users"].add(str(user))
+                    direct_click_events.append({
+                        "mathadata_id": mid,
+                        "created_at": pd.to_datetime(click["createdAt"], utc=True),
+                        "user_id": str(user),
+                    })
                 else:
                     activity[mid]["basthon_direct_anonymous"] += 1
 
@@ -210,6 +216,55 @@ def main():
             "basthon_short_copies": item["short_copies"],
         })
     inferred_df = pd.DataFrame(inferred)
+    direct_candidates = []
+    for session in sessions.itertuples():
+        earlier = [
+            click for click in direct_click_events
+            if click["mathadata_id"] == session.mathadata_id
+            and click["created_at"] <= session.start
+            and click["created_at"] >= session.start - pd.Timedelta(days=30)
+        ]
+        recent = {
+            click["user_id"] for click in earlier
+            if click["created_at"] >= session.start - pd.Timedelta(days=7)
+        }
+        very_recent = {
+            click["user_id"] for click in earlier
+            if click["created_at"] >= session.start - pd.Timedelta(days=1)
+        }
+        older = {
+            click["user_id"] for click in earlier
+            if click["created_at"] < session.start - pd.Timedelta(days=7)
+        }
+        if len(recent) == 1:
+            user_id = next(iter(recent))
+            confidence = "A7"
+        elif not recent and len(older) == 1:
+            user_id = next(iter(older))
+            confidence = "B30"
+        else:
+            user_id = None
+            confidence = "non_attribue"
+        direct_candidates.append({
+            "confidence": confidence,
+            "strong_24h": user_id is not None and len(very_recent) == 1,
+            "matched_capytale_ab": user_id in match_by_user if user_id else False,
+            "public": session.mathadata_id == "3518185",
+            "mode": session.mode_historique,
+            "user_id": user_id,
+        })
+    direct_df = pd.DataFrame(direct_candidates)
+    public_rows = [row for row in by_activity if row["public"]]
+    locked_rows = [row for row in by_activity if not row["public"]]
+
+    def channel_totals(rows):
+        return {
+            "module_views": sum(row["module_views"] for row in rows),
+            "capytale_clicks": sum(row["capytale_clicks"] for row in rows),
+            "basthon_direct_clicks": sum(row["basthon_direct_clicks"] for row in rows),
+            "basthon_direct_anonymous": sum(row["basthon_direct_anonymous"] for row in rows),
+        }
+
     facts = {
         "_meta": {
             "snapshot": SNAP.name,
@@ -227,6 +282,8 @@ def main():
             "basthon_short_modal_opens": sum(row["basthon_short_modal_opens"] for row in by_activity),
             "basthon_short_copies": sum(row["basthon_short_copies"] for row in by_activity),
         },
+        "public_activity": channel_totals(public_rows),
+        "locked_activities": channel_totals(locked_rows),
         "future_attribution": {
             "attributed_sessions": len(inferred),
             "copy_confidence": (
@@ -240,6 +297,67 @@ def main():
                 if len(inferred_df) else
                 {"depannage_infere": 0, "remplacement_infere": 0, "indetermine": 0}
             ),
+        },
+        "historical_direct_click_candidates": {
+            "_note": (
+                "Exploratoire uniquement : un accès Basthon direct prouve un test/une consultation "
+                "du professeur, pas la copie du lien court aux élèves."
+            ),
+            "connected_direct_click_users": len({
+                event["user_id"] for event in direct_click_events
+            }),
+            "candidate_sessions": int(
+                direct_df["confidence"].isin(["A7", "B30"]).sum()
+            ),
+            "candidate_sessions_a7": int((direct_df["confidence"] == "A7").sum()),
+            "candidate_sessions_b30": int((direct_df["confidence"] == "B30").sum()),
+            "strong_candidate_sessions_24h": int(direct_df["strong_24h"].sum()),
+            "candidate_sessions_with_capytale_match_ab": int(
+                (
+                    direct_df["confidence"].isin(["A7", "B30"])
+                    & direct_df["matched_capytale_ab"]
+                ).sum()
+            ),
+            "strong_sessions_with_capytale_match_ab": int(
+                (direct_df["strong_24h"] & direct_df["matched_capytale_ab"]).sum()
+            ),
+            "distinct_candidate_users": int(
+                direct_df.loc[
+                    direct_df["confidence"].isin(["A7", "B30"]), "user_id"
+                ].nunique()
+            ),
+            "distinct_candidate_users_with_capytale_match_ab": int(
+                direct_df.loc[
+                    direct_df["confidence"].isin(["A7", "B30"])
+                    & direct_df["matched_capytale_ab"],
+                    "user_id",
+                ].nunique()
+            ),
+            "locked_activities": {
+                "candidate_sessions": int(
+                    (
+                        ~direct_df["public"]
+                        & direct_df["confidence"].isin(["A7", "B30"])
+                    ).sum()
+                ),
+                "strong_candidate_sessions_24h": int(
+                    (~direct_df["public"] & direct_df["strong_24h"]).sum()
+                ),
+                "candidate_sessions_with_capytale_match_ab": int(
+                    (
+                        ~direct_df["public"]
+                        & direct_df["confidence"].isin(["A7", "B30"])
+                        & direct_df["matched_capytale_ab"]
+                    ).sum()
+                ),
+                "strong_sessions_with_capytale_match_ab": int(
+                    (
+                        ~direct_df["public"]
+                        & direct_df["strong_24h"]
+                        & direct_df["matched_capytale_ab"]
+                    ).sum()
+                ),
+            },
         },
     }
     K.dump_json(facts, OUT / "facts_urlr_site.json")

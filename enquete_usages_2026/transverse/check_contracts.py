@@ -136,8 +136,12 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
     us=pd.read_csv(f"{urlr_dir}/sessions.csv",dtype=str,keep_default_na=False)
     fu=loadstrict(f"{urlr_dir}/facts_urlr.json")
     fuc=loadstrict(f"{urlr_dir}/facts_urlr_cross.json")
+    fus=loadstrict(f"{urlr_dir}/facts_urlr_site.json")
     modes={'compatible_remplacement','compatible_depannage','indetermine'}
-    check(set(us['mode_historique'])<=modes and set(us['mode_sensibilite_pm1h'])<=modes,
+    check(
+          set(us['mode_historique'])<=modes
+          and set(us['mode_sensibilite_pm1h'])<=modes
+          and set(us['mode_exploratoire_clics'])<=modes,
           "modes URLR exclusifs dans le vocabulaire canonique")
     check(len(us)==fu['sessions_estimees'], "facts_urlr.sessions_estimees = table sessions")
     check(pd.to_numeric(us['clicks']).sum()==fu['clicks']==sum(pd.to_numeric(pd.read_csv(urlr_links[-1])['clicks'])),
@@ -145,7 +149,43 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
     observable=us['capytale_observable'].eq('True')
     check(sum(fu['modes_historiques'].values())==int(observable.sum()),
           "modes historiques exhaustifs sur la période Capytale observable")
+    check(sum(fu['modes_exploratoires_clics'].values())==int(observable.sum()),
+          "modes exploratoires clics exhaustifs sur la période Capytale observable")
+    check(sum(fu['indetermines_detail'].values())==fu['modes_historiques']['indetermine'],
+          "motifs indéterminés URLR exclusifs et exhaustifs")
     check(fuc['urlr_sessions']==int(observable.sum()), "facts_urlr_cross aligné sur sessions observables")
+    bands=fu['diagnostics']['size_bands']
+    click_bands=fu['diagnostics']['click_bands']
+    check(sum(bands.values())==len(us), "bandes de taille URLR exhaustives")
+    check(sum(click_bands.values())==len(us), "bandes de clics URLR exhaustives")
+    check(fu['diagnostics']['sessions_un_unique']==bands['1'], "diagnostic URLR : salves à un unique")
+    check(fu['diagnostics']['sessions_5_clics_ou_plus']==int((pd.to_numeric(us['clicks'])>=5).sum()),
+          "diagnostic URLR : salves à ≥5 clics alignées")
+    check(fuc['urlr_usage_classe_estime']==int(us.loc[observable,'usage_classe_estime'].eq('True').sum()),
+          "facts_urlr_cross : séances URLR ≥5 alignées")
+    check(fuc['urlr_salves_5_clics_ou_plus']==int((pd.to_numeric(us.loc[observable,'clicks'])>=5).sum()),
+          "facts_urlr_cross : salves URLR ≥5 clics alignées")
+    check(fuc['capytale_usage_classe']==sum(row['capytale_usage_classe'] for row in fuc['comparison_by_activity']),
+          "facts_urlr_cross : séances Capytale ≥5 alignées")
+    forbidden_site_keys={'name','email','user_id','payload_user_id','capytale_id','teacher_id'}
+    def collect_keys(value):
+        if isinstance(value,dict):
+            return set(value) | set().union(*(collect_keys(v) for v in value.values()), set())
+        if isinstance(value,list):
+            return set().union(*(collect_keys(v) for v in value), set())
+        return set()
+    check(not (forbidden_site_keys & collect_keys(fus)),
+          "facts_urlr_site agrégé sans identité ni identifiant individuel")
+    dashboard=f"{_ENQ}/usage-urlr/dashboard_urlr.html"
+    check(_os.path.exists(dashboard), "dashboard URLR généré présent")
+    if _os.path.exists(dashboard):
+        dh=open(dashboard,encoding='utf-8').read()
+        check(
+            f'"clicks":{fu["clicks"]}' in dh
+            and f'"sessions_estimees":{fu["sessions_estimees"]}' in dh
+            and f'"capytale_usage_classe":{fuc["capytale_usage_classe"]}' in dh,
+            "dashboard URLR embarque les faits canoniques"
+        )
 
 print("6. Cohérence dashboards ↔ facts (chiffres codés en dur ≠ source de vérité) :")
 def rd(p): return open(f"{_ENQ}/{p}",encoding='utf-8').read()

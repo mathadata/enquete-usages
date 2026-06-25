@@ -22,6 +22,7 @@ Les dashboards de l'enquête sont diffusés à **un seul endroit** : **GitHub Pa
 | **Volet 1** | Déploiement réel en classe (Capytale) | `enquete_usages_2026/usage-capytale/dashboard.html` | [/volet1.html](https://mathadata.github.io/enquete-usages/volet1.html) |
 | **Volet 2** | Du site à la classe (mathadata.fr × Capytale) | `enquete_usages_2026/site-vers-classe/dashboard_volet2.html` | [/volet2.html](https://mathadata.github.io/enquete-usages/volet2.html) |
 | **Flux** | Canal d'arrivée → réutilisation → retour (Sankey) | `enquete_usages_2026/transverse/dashboard_flux_profs.html` | [/flux.html](https://mathadata.github.io/enquete-usages/flux.html) |
+| **URLR** | Canal sans compte Basthon (URLR × Capytale × site) | `enquete_usages_2026/usage-urlr/dashboard_urlr.html` | [/urlr.html](https://mathadata.github.io/enquete-usages/urlr.html) |
 
 ## Checklist à chaque modification d'un dashboard
 
@@ -33,7 +34,7 @@ Les dashboards de l'enquête sont diffusés à **un seul endroit** : **GitHub Pa
    ```bash
    bash enquete_usages_2026/publish_pages.sh
    ```
-   Copie les 7 fichiers vers la branche `gh-pages`, commit (avec le SHA source dans le message)
+   Copie les 8 fichiers vers la branche `gh-pages`, commit (avec le SHA source dans le message)
    + push, sans `--force`. Idempotent (« déjà à jour, rien à publier » s'il n'y a rien de neuf).
 
 C'est tout : **une seule surface, pas de double publication**.

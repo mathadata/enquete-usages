@@ -419,7 +419,7 @@ def chart_activity(links: pd.DataFrame, extracted_at: pd.Timestamp, out_dir: Pat
     )
     subtitle(
         ax,
-        "Barre claire : clics · barre bleue : visiteurs uniques calculés par URLR pour chaque lien",
+        "Barre claire : clics · barre bleue : uniques URLR de fenêtre (méthode de déduplication non documentée)",
     )
     ax.set_xlim(0, ranked["clicks"].max() * 1.23)
     ax.grid(axis="y", visible=False)
@@ -427,7 +427,7 @@ def chart_activity(links: pd.DataFrame, extracted_at: pd.Timestamp, out_dir: Pat
     source_note(
         fig,
         extracted_at,
-        "Les uniques ne sont pas dédupliqués entre deux liens différents.",
+        "Les uniques ne sont pas dédupliqués entre liens et peuvent sous-compter un réseau partagé/NAT.",
     )
     fig.subplots_adjust(left=0.34, bottom=0.15, top=0.82)
     save(fig, out_dir, "04_volume_et_portee_par_activite.png")
@@ -449,13 +449,14 @@ def chart_size_comparison(cross: dict, out_dir: Path) -> None:
     y = np.arange(len(rows))
 
     fig, ax = plt.subplots(figsize=(11.5, 6))
-    ax.barh(y - 0.18, rows["capytale_usage_classe"], height=0.34, color=TEAL, label="Capytale ≥ 5 élèves")
-    ax.barh(y + 0.18, rows["urlr_usage_classe_estime"], height=0.34, color=BLUE, label="URLR ≥ 5 uniques")
+    ax.barh(y - 0.24, rows["capytale_usage_classe"], height=0.22, color=TEAL, label="Capytale ≥ 5 élèves")
+    ax.barh(y, rows["urlr_usage_classe_estime"], height=0.22, color=BLUE, label="URLR ≥ 5 uniques")
+    ax.barh(y + 0.24, rows["urlr_salves_5_clics_ou_plus"], height=0.22, color=ROSE, label="URLR ≥ 5 clics")
     ax.set_yticks(y)
     ax.set_yticklabels(rows["label"])
     ax.set_xlabel("Séances sur la période commune")
-    ax.set_title("Le canal sans compte complète surtout deux activités", loc="left", pad=32)
-    subtitle(ax, "Seuil comparable, nature différente : élèves distincts Capytale vs navigateurs uniques URLR")
+    ax.set_title("Le signal collectif URLR dépend fortement de la métrique", loc="left", pad=32)
+    subtitle(ax, "Uniques = borne basse technique ; clics = proxy exploratoire si les réouvertures sont rares")
     ax.grid(axis="y", visible=False)
     ax.legend(frameon=False, loc="lower right")
     fig.text(
@@ -473,12 +474,14 @@ def chart_modes(facts: dict, out_dir: Path) -> None:
     labels = ["Remplacement\ncompatible", "Dépannage\ncompatible", "Indéterminé"]
     strict = [facts["modes_historiques"][mode] for mode in modes]
     sensitivity = [facts["modes_sensibilite_pm1h"][mode] for mode in modes]
+    clicks = [facts["modes_exploratoires_clics"][mode] for mode in modes]
     x = np.arange(len(modes))
 
     fig, ax = plt.subplots(figsize=(9.5, 5.7))
-    ax.bar(x - 0.18, strict, width=0.36, color=BLUE, label="Chevauchement strict")
-    ax.bar(x + 0.18, sensitivity, width=0.36, color=AMBER, label="Sensibilité ± 1 h")
-    for xpos, values in ((x - 0.18, strict), (x + 0.18, sensitivity)):
+    ax.bar(x - 0.24, strict, width=0.23, color=BLUE, label="Uniques — strict")
+    ax.bar(x, sensitivity, width=0.23, color=AMBER, label="Uniques — ± 1 h")
+    ax.bar(x + 0.24, clicks, width=0.23, color=ROSE, label="Clics — strict")
+    for xpos, values in ((x - 0.24, strict), (x, sensitivity), (x + 0.24, clicks)):
         for xx, value in zip(xpos, values):
             ax.text(xx, value + 2, fmt_int(value), ha="center", color=INK, fontweight="bold")
     ax.set_xticks(x)
@@ -486,7 +489,7 @@ def chart_modes(facts: dict, out_dir: Path) -> None:
     ax.set_ylabel("Séances URLR estimées")
     ax.set_title("La majorité des séances reste non attribuable", loc="left", pad=32)
     subtitle(ax, "Indices temporels nationaux : les catégories ne prouvent pas le mode d'une classe")
-    ax.set_ylim(0, max(sensitivity) * 1.14)
+    ax.set_ylim(0, max(strict + sensitivity + clicks) * 1.14)
     ax.grid(axis="x", visible=False)
     ax.legend(frameon=False, loc="upper left")
     fig.text(

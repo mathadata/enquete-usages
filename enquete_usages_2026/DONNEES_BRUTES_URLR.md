@@ -37,7 +37,9 @@ aux activités proposées sur Capytale.
 Les fenêtres sont des journées civiles en `Europe/Paris`, avec une dernière journée éventuellement
 partielle arrêtée à `extracted_at`. Une ligne absente signifie zéro `visit`, `click` et `scan`.
 `unique_visits` est calculé par URLR **dans chaque fenêtre** : il ne faut pas sommer cette colonne
-pour obtenir le nombre d'un mois ou de toute la période.
+pour obtenir le nombre d'un mois ou de toute la période. L'API ne précise pas comment un visiteur
+est dédupliqué. URLR indique que les statistiques sont traitées avec des IP anonymisées : une IP/NAT
+commune à un établissement peut donc faire apparaître plusieurs participants comme un seul unique.
 
 ### `urlr_hourly_*` — 1 ligne = 1 lien × 1 heure de Paris non nulle
 
@@ -55,6 +57,10 @@ technique stable dans l'extraction ; `active_hours` compte les heures actives fu
 La table canonique dérivée `usage-urlr/data/sessions.csv` ajoute le chevauchement Capytale strict,
 la sensibilité ±1 h et les modes `compatible_remplacement`, `compatible_depannage` ou
 `indetermine`. Ces modes sont des indices temporels agrégés nationaux, pas des attributions.
+Les seuils fondés sur `unique_visits` sont des détections conservatrices, pas un recensement des
+classes. La table ajoute aussi `mode_exploratoire_clics` et des seuils de clics : ils testent la
+sensibilité au sous-comptage probable des uniques derrière un NAT, sans transformer les clics en
+effectifs d'élèves mesurés.
 
 ## Mapping vers les activités MathAData/Capytale
 

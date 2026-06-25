@@ -104,6 +104,18 @@
   "basthon_short_modal_opens": 0,
   "basthon_short_copies": 0
  },
+ "public_activity": {
+  "module_views": 3747,
+  "capytale_clicks": 598,
+  "basthon_direct_clicks": 311,
+  "basthon_direct_anonymous": 253
+ },
+ "locked_activities": {
+  "module_views": 6065,
+  "capytale_clicks": 627,
+  "basthon_direct_clicks": 203,
+  "basthon_direct_anonymous": 18
+ },
  "future_attribution": {
   "attributed_sessions": 0,
   "copy_confidence": {
@@ -118,6 +130,24 @@
    "depannage_infere": 0,
    "remplacement_infere": 0,
    "indetermine": 0
+  }
+ },
+ "historical_direct_click_candidates": {
+  "_note": "Exploratoire uniquement : un accès Basthon direct prouve un test/une consultation du professeur, pas la copie du lien court aux élèves.",
+  "connected_direct_click_users": 142,
+  "candidate_sessions": 57,
+  "candidate_sessions_a7": 54,
+  "candidate_sessions_b30": 3,
+  "strong_candidate_sessions_24h": 10,
+  "candidate_sessions_with_capytale_match_ab": 11,
+  "strong_sessions_with_capytale_match_ab": 2,
+  "distinct_candidate_users": 31,
+  "distinct_candidate_users_with_capytale_match_ab": 6,
+  "locked_activities": {
+   "candidate_sessions": 33,
+   "strong_candidate_sessions_24h": 8,
+   "candidate_sessions_with_capytale_match_ab": 6,
+   "strong_sessions_with_capytale_match_ab": 2
   }
  }
 }

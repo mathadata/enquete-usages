@@ -21,7 +21,7 @@ Pour URLR/Basthon, préciser en plus :
 
 - clic, visite unique de fenêtre ou séance Basthon estimée ;
 - taille `n_visiteurs_uniques_urlr` et non nombre d'élèves ;
-- classification stricte ou sensibilité ±1 h ;
+- classification stricte, sensibilité ±1 h ou sensibilité exploratoire fondée sur les clics ;
 - compatibilité historique agrégée, ou attribution prospective A/B après copie du lien court.
 
 ## Quand demander une précision

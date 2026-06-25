@@ -52,6 +52,11 @@ sans compte (actuellement Basthon), disponibles depuis le 25/12/2025. Aucun visi
 rapprochements Capytale historiques restent nationaux et inférés. Entrées :
 `public/data/urlr_{links,daily,hourly,bursts}_*.csv`, produites par `fetch_urlr.py`. Le mapping
 canonique vers `mathadata_id` vit dans `enquete_usages_2026/urlr_activity_mapping.csv`.
+`unique_visits` est une métrique de fenêtre non additive dont la clé de déduplication n'est pas
+documentée ; les IP étant anonymisées, une IP/NAT d'établissement peut sous-compter une classe.
+Les clics par salve sont donc aussi exposés comme proxy collectif exploratoire, sans jamais être
+assimilés à des élèves. Un clic Payload sur l'accès Basthon direct ne prouve pas une copie du lien
+court : il ne peut produire qu'un candidat nominatif interne, jamais une attribution publiée.
 
 ## 4. Pièges à connaître (déjà payés — ne pas refaire)
 

@@ -68,6 +68,11 @@ echo "═══ 5. Transverses (depuis tables versionnées) ═══"
 run transverse/build_scenarios.py
 run transverse/reconcile_facts.py
 run transverse/build_flux_dashboard.py
+if [ -f "$E/usage-urlr/data/facts_urlr_site.json" ]; then
+  run usage-urlr/build_dashboard.py
+else
+  skip "usage-urlr/build_dashboard.py" "faits URLR site absents"
+fi
 
 echo "═══ 6. CONTRATS (garde-fou — échoue si incohérence) ═══"
 python3 "$E/transverse/check_contracts.py"

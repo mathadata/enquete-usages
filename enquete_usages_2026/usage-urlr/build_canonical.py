@@ -55,12 +55,84 @@ def counts(series):
     return {name: int(raw.get(name, 0)) for name in expected}
 
 
+def indeterminate_reason(row):
+    n_unique = row["n_visiteurs_uniques_urlr"]
+    candidates = row["n_sessions_capytale_simultanees"]
+    max_pupils = row["max_eleves_capytale_simultanes"]
+    if n_unique >= K.CLASSE_MIN and candidates >= 1:
+        return "grande_salve_avec_capytale"
+    if 1 <= n_unique <= 4 and candidates == 0:
+        return "petite_salve_sans_capytale"
+    if 1 <= n_unique <= 4 and candidates > 1:
+        return "petite_salve_plusieurs_capytale"
+    if 1 <= n_unique <= 4 and candidates == 1 and max_pupils < K.CLASSE_MIN:
+        return "petite_salve_avec_capytale_sous_seuil"
+    return "autre"
+
+
 def capytale_observation_end(usages):
     match = re.search(r"(\d{8})", Path(K.capytale_csv()).name)
     if match:
         extraction_day = pd.to_datetime(match.group(1), format="%Y%m%d").tz_localize("Europe/Paris")
         return extraction_day + pd.Timedelta(days=1)
     return usages["created_dt"].max()
+
+
+def session_diagnostics(sessions):
+    size = sessions["n_visiteurs_uniques_urlr"]
+    clicks = sessions["clicks"]
+    school_hours = (
+        (sessions["start"].dt.weekday < 5)
+        & sessions["start"].dt.hour.between(7, 17)
+    )
+    bands = {
+        "1": int((size == 1).sum()),
+        "2_4": int(size.between(2, 4).sum()),
+        "5_9": int(size.between(5, 9).sum()),
+        "10_19": int(size.between(10, 19).sum()),
+        "20_plus": int((size >= 20).sum()),
+    }
+    click_bands = {
+        "1": int((clicks == 1).sum()),
+        "2_4": int(clicks.between(2, 4).sum()),
+        "5_9": int(clicks.between(5, 9).sum()),
+        "10_19": int(clicks.between(10, 19).sum()),
+        "20_29": int(clicks.between(20, 29).sum()),
+        "30_plus": int((clicks >= 30).sum()),
+    }
+    monthly = []
+    for month, group in sessions.groupby(sessions["start"].dt.strftime("%Y-%m")):
+        unique_sum = int(group["n_visiteurs_uniques_urlr"].sum())
+        monthly.append({
+            "month": month,
+            "sessions": len(group),
+            "clicks": int(group["clicks"].sum()),
+            "visiteurs_uniques_sommes_non_dedupliquees": unique_sum,
+            "clicks_par_unique_de_fenetre": round(
+                group["clicks"].sum() / unique_sum, 2
+            ) if unique_sum else None,
+            "usage_classe_estime": int(group["usage_classe_estime"].sum()),
+        })
+    return {
+        "size_bands": bands,
+        "click_bands": click_bands,
+        "visiteurs_uniques_sommes_non_dedupliquees": int(size.sum()),
+        "clicks_par_unique_de_fenetre": round(clicks.sum() / size.sum(), 2),
+        "sessions_un_unique": bands["1"],
+        "sessions_sous_5_uniques": int((size < K.CLASSE_MIN).sum()),
+        "sessions_5_clics_ou_plus": int((clicks >= K.CLASSE_MIN).sum()),
+        "sessions_10_clics_ou_plus": int((clicks >= K.SEANCE_RICHE_MIN).sum()),
+        "sessions_20_clics_ou_plus": int((clicks >= K.GRANDE_CLASSE_MIN).sum()),
+        "school_hours": {
+            "definition": "lundi-vendredi, début entre 07:00 et 17:59 Europe/Paris",
+            "sessions": int(school_hours.sum()),
+            "clicks": int(sessions.loc[school_hours, "clicks"].sum()),
+            "usage_classe_estime": int(
+                sessions.loc[school_hours, "usage_classe_estime"].sum()
+            ),
+        },
+        "monthly": monthly,
+    }
 
 
 def main():
@@ -106,6 +178,7 @@ def main():
         observable = burst.end <= cap_observed_end
         mode = classify(burst.unique_visits, candidates) if observable else "indetermine"
         mode_pm1 = classify(burst.unique_visits, candidates_pm1) if observable else "indetermine"
+        mode_clicks = classify(burst.clicks, candidates) if observable else "indetermine"
         rows.append({
             "session_urlr_id": burst.burst_id,
             "link_id": burst.link_id,
@@ -130,11 +203,20 @@ def main():
             "n_sessions_capytale_pm1h": len(candidates_pm1),
             "max_eleves_capytale_pm1h": int(candidates_pm1["n_eleves"].max()) if len(candidates_pm1) else 0,
             "mode_sensibilite_pm1h": mode_pm1,
+            "mode_exploratoire_clics": mode_clicks,
         })
     sessions = pd.DataFrame(rows)
     sessions["start"] = pd.to_datetime(sessions["start"], utc=True).dt.tz_convert("Europe/Paris")
     sessions["end"] = pd.to_datetime(sessions["end"], utc=True).dt.tz_convert("Europe/Paris")
     sessions = sessions.sort_values(["start", "mathadata_id"])
+    sessions["indeterminate_reason"] = ""
+    indeterminate_mask = (
+        sessions["capytale_observable"]
+        & sessions["mode_historique"].eq("indetermine")
+    )
+    sessions.loc[indeterminate_mask, "indeterminate_reason"] = sessions.loc[
+        indeterminate_mask
+    ].apply(indeterminate_reason, axis=1)
     sessions.to_csv(OUT / "sessions.csv", index=False)
 
     observable_sessions = sessions[sessions["capytale_observable"]].copy()
@@ -151,15 +233,31 @@ def main():
             ),
             "usage_classe_estime": int(group["usage_classe_estime"].sum()),
             "seance_riche_estimee": int(group["seance_riche_estimee"].sum()),
+            "salves_5_clics_ou_plus": int((group["clicks"] >= K.CLASSE_MIN).sum()),
+            "salves_10_clics_ou_plus": int((group["clicks"] >= K.SEANCE_RICHE_MIN).sum()),
+            "clics_par_unique_de_fenetre": round(
+                group["clicks"].sum() / group["n_visiteurs_uniques_urlr"].sum(), 2
+            ),
             "modes_observables": counts(obs["mode_historique"]),
+            "modes_exploratoires_clics": counts(obs["mode_exploratoire_clics"]),
         })
 
+    indeterminate = observable_sessions[
+        observable_sessions["mode_historique"] == "indetermine"
+    ].copy()
     facts = {
         "_meta": {
             "source_links": links_path.name,
             "source_bursts": bursts_path.name,
             "session_rule": "même lien; débuts d'heures actives consécutifs espacés de moins de 3 h",
-            "size": "unique_visits URLR recalculé sur la fenêtre complète; proxy de navigateur, pas élève mesuré",
+            "size": (
+                "unique_visits URLR recalculé sur la fenêtre complète; méthode de déduplication "
+                "non documentée par l'API, pas un nombre d'élèves"
+            ),
+            "unique_visits_caution": (
+                "URLR traite les statistiques avec des IP anonymisées sans documenter la clé "
+                "d'unicité. Une IP/NAT d'établissement peut donc sous-compter un groupe."
+            ),
             "capytale_observed_until": cap_observed_end.isoformat(),
         },
         "links": len(links),
@@ -172,6 +270,14 @@ def main():
         "grandes_classes_estimees": int(sessions["grande_classe_estimee"].sum()),
         "modes_historiques": counts(observable_sessions["mode_historique"]),
         "modes_sensibilite_pm1h": counts(observable_sessions["mode_sensibilite_pm1h"]),
+        "modes_exploratoires_clics": counts(
+            observable_sessions["mode_exploratoire_clics"]
+        ),
+        "indetermines_detail": {
+            name: int(value)
+            for name, value in indeterminate["indeterminate_reason"].value_counts().items()
+        },
+        "diagnostics": session_diagnostics(sessions),
         "by_activity": by_activity,
     }
     K.dump_json(facts, OUT / "facts_urlr.json")
@@ -201,12 +307,22 @@ def main():
             ),
             "urlr_usage_classe_estime": int(ug["usage_classe_estime"].sum()),
             "urlr_seances_riches_estimees": int(ug["seance_riche_estimee"].sum()),
+            "urlr_salves_5_clics_ou_plus": int((ug["clicks"] >= K.CLASSE_MIN).sum()),
+            "urlr_salves_10_clics_ou_plus": int(
+                (ug["clicks"] >= K.SEANCE_RICHE_MIN).sum()
+            ),
             "capytale_sessions": len(cg),
             "capytale_eleves_lignes": int((student_common["mathadata_id"] == mid).sum()),
             "capytale_usage_classe": int((cg["n_eleves"] >= K.CLASSE_MIN).sum()),
             "capytale_seances_riches": int((cg["n_eleves"] >= K.SEANCE_RICHE_MIN).sum()),
             "modes_urlr": counts(ug["mode_historique"]),
         })
+    cap_class = int((cap_common["n_eleves"] >= K.CLASSE_MIN).sum())
+    cap_rich = int((cap_common["n_eleves"] >= K.SEANCE_RICHE_MIN).sum())
+    urlr_class = int(observable_sessions["usage_classe_estime"].sum())
+    urlr_rich = int(observable_sessions["seance_riche_estimee"].sum())
+    urlr_click_class = int((observable_sessions["clicks"] >= K.CLASSE_MIN).sum())
+    urlr_click_rich = int((observable_sessions["clicks"] >= K.SEANCE_RICHE_MIN).sum())
     cross = {
         "_meta": {
             "common_start": common_start.isoformat(),
@@ -217,6 +333,19 @@ def main():
         },
         "urlr_sessions": len(observable_sessions),
         "capytale_sessions": len(cap_common),
+        "urlr_usage_classe_estime": urlr_class,
+        "capytale_usage_classe": cap_class,
+        "urlr_seances_riches_estimees": urlr_rich,
+        "capytale_seances_riches": cap_rich,
+        "urlr_salves_5_clics_ou_plus": urlr_click_class,
+        "urlr_salves_10_clics_ou_plus": urlr_click_rich,
+        "ratio_urlr_vs_capytale_usage_classe_pct": round(100 * urlr_class / cap_class, 1),
+        "ratio_remplacement_compatible_vs_capytale_classe_pct": round(
+            100
+            * counts(observable_sessions["mode_historique"])["compatible_remplacement"]
+            / cap_class,
+            1,
+        ),
         "exact_temporal_overlaps": int(
             (observable_sessions["n_sessions_capytale_simultanees"] > 0).sum()
         ),

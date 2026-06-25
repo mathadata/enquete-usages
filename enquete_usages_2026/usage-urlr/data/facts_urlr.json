@@ -3,7 +3,8 @@
   "source_links": "urlr_links_20260625.csv",
   "source_bursts": "urlr_bursts_20260625.csv",
   "session_rule": "même lien; débuts d'heures actives consécutifs espacés de moins de 3 h",
-  "size": "unique_visits URLR recalculé sur la fenêtre complète; proxy de navigateur, pas élève mesuré",
+  "size": "unique_visits URLR recalculé sur la fenêtre complète; méthode de déduplication non documentée par l'API, pas un nombre d'élèves",
+  "unique_visits_caution": "URLR traite les statistiques avec des IP anonymisées sans documenter la clé d'unicité. Une IP/NAT d'établissement peut donc sous-compter un groupe.",
   "capytale_observed_until": "2026-06-20T00:00:00+02:00"
  },
  "links": 6,
@@ -24,6 +25,105 @@
   "compatible_depannage": 22,
   "indetermine": 170
  },
+ "modes_exploratoires_clics": {
+  "compatible_remplacement": 43,
+  "compatible_depannage": 7,
+  "indetermine": 152
+ },
+ "indetermines_detail": {
+  "petite_salve_sans_capytale": 169,
+  "petite_salve_avec_capytale_sous_seuil": 6,
+  "grande_salve_avec_capytale": 2,
+  "petite_salve_plusieurs_capytale": 2
+ },
+ "diagnostics": {
+  "size_bands": {
+   "1": 157,
+   "2_4": 37,
+   "5_9": 7,
+   "10_19": 3,
+   "20_plus": 2
+  },
+  "click_bands": {
+   "1": 119,
+   "2_4": 30,
+   "5_9": 16,
+   "10_19": 21,
+   "20_29": 9,
+   "30_plus": 11
+  },
+  "visiteurs_uniques_sommes_non_dedupliquees": 408,
+  "clicks_par_unique_de_fenetre": 2.97,
+  "sessions_un_unique": 157,
+  "sessions_sous_5_uniques": 194,
+  "sessions_5_clics_ou_plus": 57,
+  "sessions_10_clics_ou_plus": 41,
+  "sessions_20_clics_ou_plus": 20,
+  "school_hours": {
+   "definition": "lundi-vendredi, début entre 07:00 et 17:59 Europe/Paris",
+   "sessions": 153,
+   "clicks": 1067,
+   "usage_classe_estime": 11
+  },
+  "monthly": [
+   {
+    "month": "2025-12",
+    "sessions": 2,
+    "clicks": 5,
+    "visiteurs_uniques_sommes_non_dedupliquees": 3,
+    "clicks_par_unique_de_fenetre": 1.67,
+    "usage_classe_estime": 0
+   },
+   {
+    "month": "2026-01",
+    "sessions": 43,
+    "clicks": 240,
+    "visiteurs_uniques_sommes_non_dedupliquees": 169,
+    "clicks_par_unique_de_fenetre": 1.42,
+    "usage_classe_estime": 7
+   },
+   {
+    "month": "2026-02",
+    "sessions": 30,
+    "clicks": 197,
+    "visiteurs_uniques_sommes_non_dedupliquees": 66,
+    "clicks_par_unique_de_fenetre": 2.98,
+    "usage_classe_estime": 5
+   },
+   {
+    "month": "2026-03",
+    "sessions": 33,
+    "clicks": 252,
+    "visiteurs_uniques_sommes_non_dedupliquees": 40,
+    "clicks_par_unique_de_fenetre": 6.3,
+    "usage_classe_estime": 0
+   },
+   {
+    "month": "2026-04",
+    "sessions": 41,
+    "clicks": 260,
+    "visiteurs_uniques_sommes_non_dedupliquees": 57,
+    "clicks_par_unique_de_fenetre": 4.56,
+    "usage_classe_estime": 0
+   },
+   {
+    "month": "2026-05",
+    "sessions": 32,
+    "clicks": 138,
+    "visiteurs_uniques_sommes_non_dedupliquees": 40,
+    "clicks_par_unique_de_fenetre": 3.45,
+    "usage_classe_estime": 0
+   },
+   {
+    "month": "2026-06",
+    "sessions": 25,
+    "clicks": 121,
+    "visiteurs_uniques_sommes_non_dedupliquees": 33,
+    "clicks_par_unique_de_fenetre": 3.67,
+    "usage_classe_estime": 0
+   }
+  ]
+ },
  "by_activity": [
   {
    "mathadata_id": "3515488",
@@ -33,10 +133,18 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 159,
    "usage_classe_estime": 7,
    "seance_riche_estimee": 3,
+   "salves_5_clics_ou_plus": 20,
+   "salves_10_clics_ou_plus": 13,
+   "clics_par_unique_de_fenetre": 2.31,
    "modes_observables": {
     "compatible_remplacement": 6,
     "compatible_depannage": 2,
     "indetermine": 47
+   },
+   "modes_exploratoires_clics": {
+    "compatible_remplacement": 17,
+    "compatible_depannage": 0,
+    "indetermine": 38
    }
   },
   {
@@ -47,10 +155,18 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 188,
    "usage_classe_estime": 5,
    "seance_riche_estimee": 2,
+   "salves_5_clics_ou_plus": 28,
+   "salves_10_clics_ou_plus": 20,
+   "clics_par_unique_de_fenetre": 3.11,
    "modes_observables": {
     "compatible_remplacement": 4,
     "compatible_depannage": 9,
     "indetermine": 79
+   },
+   "modes_exploratoires_clics": {
+    "compatible_remplacement": 19,
+    "compatible_depannage": 5,
+    "indetermine": 68
    }
   },
   {
@@ -61,7 +177,15 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 9,
    "usage_classe_estime": 0,
    "seance_riche_estimee": 0,
+   "salves_5_clics_ou_plus": 1,
+   "salves_10_clics_ou_plus": 1,
+   "clics_par_unique_de_fenetre": 2.22,
    "modes_observables": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 0,
+    "indetermine": 9
+   },
+   "modes_exploratoires_clics": {
     "compatible_remplacement": 0,
     "compatible_depannage": 0,
     "indetermine": 9
@@ -75,10 +199,18 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 13,
    "usage_classe_estime": 0,
    "seance_riche_estimee": 0,
+   "salves_5_clics_ou_plus": 1,
+   "salves_10_clics_ou_plus": 1,
+   "clics_par_unique_de_fenetre": 3.62,
    "modes_observables": {
     "compatible_remplacement": 0,
     "compatible_depannage": 0,
     "indetermine": 10
+   },
+   "modes_exploratoires_clics": {
+    "compatible_remplacement": 1,
+    "compatible_depannage": 0,
+    "indetermine": 9
    }
   },
   {
@@ -89,10 +221,18 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 25,
    "usage_classe_estime": 0,
    "seance_riche_estimee": 0,
+   "salves_5_clics_ou_plus": 7,
+   "salves_10_clics_ou_plus": 6,
+   "clics_par_unique_de_fenetre": 7.16,
    "modes_observables": {
     "compatible_remplacement": 0,
     "compatible_depannage": 2,
     "indetermine": 21
+   },
+   "modes_exploratoires_clics": {
+    "compatible_remplacement": 6,
+    "compatible_depannage": 2,
+    "indetermine": 15
    }
   },
   {
@@ -103,7 +243,15 @@
    "visiteurs_uniques_par_session_sommes_non_dedupliquees": 14,
    "usage_classe_estime": 0,
    "seance_riche_estimee": 0,
+   "salves_5_clics_ou_plus": 0,
+   "salves_10_clics_ou_plus": 0,
+   "clics_par_unique_de_fenetre": 1.14,
    "modes_observables": {
+    "compatible_remplacement": 0,
+    "compatible_depannage": 0,
+    "indetermine": 13
+   },
+   "modes_exploratoires_clics": {
     "compatible_remplacement": 0,
     "compatible_depannage": 0,
     "indetermine": 13

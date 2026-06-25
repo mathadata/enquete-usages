@@ -91,10 +91,16 @@ faire sortir de données personnelles du périmètre local autorisé.
   mesurés sur le site des résultats issus d'un appariement A/B.
 - Pour URLR, lire en priorité `usage-urlr/data/facts_urlr*.json`, jamais recalculer les visiteurs
   uniques en sommant les heures ou les jours. Une taille URLR se nomme
-  `n_visiteurs_uniques_urlr`, jamais `n_eleves`.
+  `n_visiteurs_uniques_urlr`, jamais `n_eleves`. L'API ne documente pas sa clé d'unicité et URLR
+  traite les statistiques avec des IP anonymisées : une IP/NAT d'établissement peut sous-compter
+  un groupe. Lire les seuils de taille comme des détections conservatrices. Le nombre de clics par
+  salve peut servir de proxy collectif exploratoire si les réouvertures sont rares ; il ne devient
+  jamais `n_eleves` et doit rester séparé des seuils canoniques fondés sur les uniques.
 - Les modes historiques `compatible_remplacement` et `compatible_depannage` sont des indices
   temporels nationaux, jamais une attribution certaine à une classe. La sensibilité ±1 h reste
-  séparée de la classification stricte.
+  séparée de la classification stricte, comme la sensibilité fondée sur les clics.
+- Un clic Payload « accès Basthon direct » peut fournir un candidat nominatif historique, jamais
+  l'auteur attribué d'une salve URLR : ce geste prouve une consultation/test, pas une copie.
 - Une attribution prospective URLR au niveau professeur exige une copie candidate unique et un
   appariement individuel site–Capytale A/B. Ne jamais utiliser `proxy_etab`.
 - Ne jamais produire une liste de noms à partir de `proxy_etab`. Un proxy peut soutenir un chiffre
