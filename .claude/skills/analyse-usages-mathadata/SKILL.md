@@ -55,6 +55,26 @@ faire sortir de données personnelles du périmètre local autorisé.
 6. Répondre avec quatre blocs courts : **Interprétation**, **Résultat**, **Base et méthode**,
    **Limites**. Pour une liste nominative, ajouter **Destination et confidentialité**.
 
+## Listes nominatives : règle stricte
+
+- `formation_source=proxy_etab` est une attribution écologique utile aux agrégats, **jamais une
+  identité nominative**. Ne pas transformer le compte formé d'un établissement en candidat nominal
+  pour chacun des profils Capytale de cet établissement.
+- Le nombre de profils marqués `formation_statut=forme` ne doit pas être présenté comme un nombre
+  de contacts identifiés. Toujours séparer :
+  1. profils formés au sens agrégé ;
+  2. profils avec appariement individuel A/B ;
+  3. personnes nominatives uniques effectivement attribuables.
+- Une liste de noms/e-mails issue d'un croisement site–Capytale contient par défaut uniquement les
+  appariements individuels A/B. Les proxies établissement sont signalés comme **non identifiables**
+  et ne sont pas développés en hypothèses nominatives, sauf demande explicite d'une enquête manuelle
+  exploratoire.
+- Avant d'inclure même un appariement A/B dans une liste ciblée par comportement, contrôler les
+  conflits visibles : activités cliquées contre activités déployées, ordre clic→déploiement,
+  proximité temporelle, meilleur profil concurrent au même établissement et comptes site multiples
+  d'une même personne. En cas de meilleur concurrent ou de contradiction avec le comportement
+  demandé, exclure la personne de la liste principale et documenter le cas comme ambigu.
+
 ## Règles de décision
 
 - Si les mots de l'utilisateur correspondent sans ambiguïté au glossaire, annoncer cette lecture
@@ -68,6 +88,8 @@ faire sortir de données personnelles du périmètre local autorisé.
   absence par une hypothèse silencieuse.
 - Ne jamais présenter un appariement nominatif site–Capytale comme certain. Séparer les résultats
   mesurés sur le site des résultats issus d'un appariement A/B.
+- Ne jamais produire une liste de noms à partir de `proxy_etab`. Un proxy peut soutenir un chiffre
+  agrégé, pas identifier le collègue concerné.
 
 ## Interdictions
 

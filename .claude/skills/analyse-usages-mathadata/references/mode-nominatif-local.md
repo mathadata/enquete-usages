@@ -53,6 +53,21 @@ Un clone seul ne contient volontairement pas les sources nominatives. Le collèg
   - identité Capytale inférée par appariement A/B.
 - Pour une liste issue de l'appariement, inclure `match_confidence` et la règle A/B, ou filtrer sur
   A si l'utilisateur demande un niveau de certitude élevé.
+- **Exclure des listes nominatives tout profil dont `formation_source=proxy_etab`.** Ce statut
+  signifie seulement qu'un compte formé existe dans le même établissement ; il ne désigne pas la
+  personne derrière le profil Capytale. Ne pas énumérer les comptes formés de l'établissement comme
+  hypothèses nominatives, sauf demande explicite d'une enquête exploratoire manuelle.
+- Pour une liste ciblée par comportement (par exemple « exactement un usage-classe »), auditer les
+  appariements A/B avant restitution :
+  - comparer activités cliquées et activités effectivement déployées ;
+  - vérifier que le clic précède ou accompagne le déploiement ;
+  - chercher un profil concurrent du même établissement présentant une meilleure concordance ;
+  - rechercher plusieurs comptes site pour une même personne ;
+  - écarter de la liste principale toute identité dont un meilleur candidat contredit le
+    comportement recherché.
+- Toujours distinguer trois effectifs : profils répondant au critère, profils appariés
+  individuellement, personnes nominatives uniques retenues après audit. Un effectif agrégé
+  `formation_statut=forme`, notamment alimenté par `proxy_etab`, n'est pas un effectif de contacts.
 - Si la couverture d'appariement ne permet pas de répondre pour toute la population, fournir deux
   chiffres : population totale répondant au critère côté Capytale et sous-ensemble nominativement
   attribuable.
