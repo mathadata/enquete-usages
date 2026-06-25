@@ -176,6 +176,13 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
         return set()
     check(not (forbidden_site_keys & collect_keys(fus)),
           "facts_urlr_site agrégé sans identité ni identifiant individuel")
+    _hc=fus['historical_direct_click_candidates']
+    check(sum(_hc['candidate_burst_size_bands'].values())==_hc['candidate_sessions'],
+          "URLR candidats : bandes de taille de salve exhaustives")
+    check(sum(_hc['candidate_burst_modes'].values())==_hc['candidate_sessions'],
+          "URLR candidats : modes de salve exhaustifs")
+    check(_hc['candidate_sessions_ge5_uniques']==sum(_hc['candidate_burst_size_bands'][b] for b in ('5_9','10_19','20_plus')),
+          "URLR candidats : salves ≥5 uniques alignées")
     dashboard=f"{_ENQ}/usage-urlr/dashboard_urlr.html"
     check(_os.path.exists(dashboard), "dashboard URLR généré présent")
     if _os.path.exists(dashboard):

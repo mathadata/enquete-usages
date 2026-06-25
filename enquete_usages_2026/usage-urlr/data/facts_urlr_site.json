@@ -143,6 +143,19 @@
   "strong_sessions_with_capytale_match_ab": 2,
   "distinct_candidate_users": 31,
   "distinct_candidate_users_with_capytale_match_ab": 6,
+  "candidate_burst_size_bands": {
+   "1": 37,
+   "2_4": 14,
+   "5_9": 3,
+   "10_19": 1,
+   "20_plus": 2
+  },
+  "candidate_burst_modes": {
+   "compatible_remplacement": 5,
+   "compatible_depannage": 5,
+   "indetermine": 47
+  },
+  "candidate_sessions_ge5_uniques": 6,
   "locked_activities": {
    "candidate_sessions": 33,
    "strong_candidate_sessions_24h": 8,

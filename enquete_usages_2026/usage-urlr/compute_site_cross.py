@@ -251,9 +251,21 @@ def main():
             "matched_capytale_ab": user_id in match_by_user if user_id else False,
             "public": session.mathadata_id == "3518185",
             "mode": session.mode_historique,
+            "n_uniques": int(session.n_visiteurs_uniques_urlr),
             "user_id": user_id,
         })
     direct_df = pd.DataFrame(direct_candidates)
+    # (b) Profil de taille/mode des salves QUI ONT un candidat « clic direct » connu.
+    # Agrégat exploratoire, sans nominatif : caractérise l'entonnoir d'adoption Basthon.
+    cand_df = direct_df[direct_df["confidence"].isin(["A7", "B30"])]
+    cand_sz = cand_df["n_uniques"]
+    cand_size_bands = {
+        "1": int((cand_sz == 1).sum()),
+        "2_4": int(cand_sz.between(2, 4).sum()),
+        "5_9": int(cand_sz.between(5, 9).sum()),
+        "10_19": int(cand_sz.between(10, 19).sum()),
+        "20_plus": int((cand_sz >= 20).sum()),
+    }
     public_rows = [row for row in by_activity if row["public"]]
     locked_rows = [row for row in by_activity if not row["public"]]
 
@@ -333,6 +345,11 @@ def main():
                     "user_id",
                 ].nunique()
             ),
+            "candidate_burst_size_bands": cand_size_bands,
+            "candidate_burst_modes": counts(
+                cand_df["mode"], ("compatible_remplacement", "compatible_depannage", "indetermine")
+            ),
+            "candidate_sessions_ge5_uniques": int((cand_df["n_uniques"] >= K.CLASSE_MIN).sum()),
             "locked_activities": {
                 "candidate_sessions": int(
                     (
