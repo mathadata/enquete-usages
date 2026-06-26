@@ -200,6 +200,16 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
           "URLR candidats : salves ≥10 clics alignées")
     check(_hc['candidate_sessions_nat_suspect']<=_hc['candidate_sessions_ge10_clics'],
           "URLR candidats : NAT-suspect inclus dans ≥10 clics")
+    # flag Basthon dans les profils (pseudonyme md5[:8], appariement A/B) — voir build_profiles.py
+    _ptp=f"{_ENQ}/transverse/data/profiles_teacher.csv"; _bup=f"{urlr_dir}/basthon_ab_users.csv"
+    if _os.path.exists(_ptp) and _os.path.exists(_bup):
+        _pt=pd.read_csv(_ptp,dtype=str,keep_default_na=False); _bu=pd.read_csv(_bup,dtype=str,keep_default_na=False)
+        check('basthon_user' in _pt.columns and int((_pt['basthon_user']=='1').sum())==len(_bu),
+              "profils : basthon_user = profs appariés A/B Basthon")
+        check(set(_bu['teacher'])<=set(_pt['teacher']) and not _bu['teacher'].duplicated().any(),
+              "profils : basthon_ab_users pseudonyme ⊆ profils, sans doublon")
+        check(not ({'nom','prenom','email'} & set(_bu.columns)),
+              "basthon_ab_users sans identité (md5[:8] uniquement)")
     dashboard=f"{_ENQ}/usage-urlr/dashboard_urlr.html"
     check(_os.path.exists(dashboard), "dashboard URLR généré présent")
     if _os.path.exists(dashboard):
@@ -251,6 +261,8 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
             f'<div class="big">{_hist["candidate_sessions"]}</div>',
             f'{_hist["distinct_candidate_users"]} comptes connectés distincts ; {_hist["candidate_sessions_with_capytale_match_ab"]} salves ont aussi',
             f'24 h : {_hist["strong_candidate_sessions_24h"]} salves, dont {_hist["strong_sessions_with_capytale_match_ab"]} appariées',
+            f'{_diag["sessions_classe_uniques_ou_nat"]} séances Basthon de taille classe',
+            f'{_diag["sessions_nat_suspect"]} masquées par un NAT',
         ]
         missing=[e for e in expected if e not in dh]
         check(not missing, "dashboard URLR : chiffres en clair concordants avec les facts"
@@ -290,6 +302,12 @@ check(bool(m) and int(m.group(1))==round(ft['retention_canonical']['taux']), f"t
 v2=rd("site-vers-classe/dashboard_volet2.html")
 check(f"{fr['population']['reached_classe_ge5']} ont atteint une classe" in v2, f"volet2: funnel classe ≥5 = {fr['population']['reached_classe_ge5']}")
 check(f"{fr['population']['reached_seance_riche_ge10']} une séance riche" in v2, f"volet2: funnel séance riche ≥10 = {fr['population']['reached_seance_riche_ge10']}")
+# note Basthon (estimé, non additionné) en pied de synthèse + flux = facts URLR (anti-dérive)
+_n44=fu['diagnostics']['sessions_classe_uniques_ou_nat']; _n32=fu['diagnostics']['sessions_nat_suspect']
+for _f in ("transverse/dashboard_synthese.html","transverse/dashboard_flux_profs.html"):
+    _h=rd(_f)
+    check(f"~{_n44} séances Basthon" in _h and f"{_n32} masquées par un NAT" in _h,
+          f"note Basthon ({_f.rsplit('/',1)[-1]}) = facts URLR séances classe={_n44}/NAT={_n32}")
 
 print(f"\n{'❌ '+str(len(fails))+' contrat(s) cassé(s)' if fails else '✅ tous les contrats sont respectés'}")
 sys.exit(1 if fails else 0)

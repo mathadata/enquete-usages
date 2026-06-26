@@ -64,6 +64,8 @@ def build_replacements(payload):
         "__SIZE1__": str(diag["size_bands"]["1"]),
         "__CPU__": dec(diag["clicks_par_unique_de_fenetre"]),
         "__PCTSOUS5__": str(pct(diag["sessions_sous_5_uniques"], u["sessions_estimees"])),
+        "__NATCLASS__": str(diag["sessions_classe_uniques_ou_nat"]),
+        "__NAT__": str(diag["sessions_nat_suspect"]),
         "__RATIOMIN__": dec(round(lo["clicks_par_unique_de_fenetre"], 1)),
         "__MONTHMIN__": FR_MONTHS[int(lo["month"][5:7])],
         "__RATIOMAX__": dec(round(hi["clicks_par_unique_de_fenetre"], 1)),
@@ -227,6 +229,9 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
   <div class="callout warn"><p><b>Conséquence méthodologique.</b> Les catégories remplacement/dépannage
   sont conservées parce qu'elles répondent au protocole fixé, mais elles sont <b>conservatrices</b>.
   Une grande classe partageant une IP peut tomber dans « petite salve » ou « indéterminé ».</p></div>
+  <div class="callout"><p><b>Correction par les clics.</b> En comptant une classe derrière un NAT
+  (peu d'uniques, beaucoup de clics) comme une classe, on estime <b>__NATCLASS__ séances Basthon de taille classe</b>
+  (dont <b>__NAT__ masquées par un NAT</b>), contre __CLASS__ par les uniques seuls.</p></div>
 </div></section>
 
 <section><div class="wrap">

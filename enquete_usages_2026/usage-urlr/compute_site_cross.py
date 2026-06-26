@@ -251,6 +251,7 @@ def main():
             "matched_capytale_ab": user_id in match_by_user if user_id else False,
             "public": session.mathadata_id == "3518185",
             "mode": session.mode_historique,
+            "mathadata_id": session.mathadata_id,
             "n_uniques": int(session.n_visiteurs_uniques_urlr),
             "clicks": int(session.clicks),
             "user_id": user_id,
@@ -278,6 +279,26 @@ def main():
         "20_29": int(cand_cl.between(20, 29).sum()),
         "30_plus": int((cand_cl >= 30).sum()),
     }
+    # Profs Capytale appariés A/B avec usage Basthon classe/groupe : liste PSEUDONYME (md5[:8])
+    # versionnée, consommée par build_profiles.py (flag basthon_user). Aucun nom ni e-mail.
+    deployed = cap_sessions.groupby("teacher")["mathadata_id"].apply(set).to_dict()
+    ab_users = {}
+    for r in direct_candidates:
+        if r["confidence"] not in ("A7", "B30") or not r["matched_capytale_ab"]:
+            continue
+        cap_acc, mconf = match_by_user[r["user_id"]]
+        is_class = r["n_uniques"] >= K.CLASSE_MIN or (r["n_uniques"] <= 4 and r["clicks"] >= K.SEANCE_RICHE_MIN)
+        is_group = r["clicks"] >= K.CLASSE_MIN
+        if not (is_class or is_group):
+            continue
+        e = ab_users.setdefault(cap_acc[:8], {"teacher": cap_acc[:8], "basthon_tier": "groupe",
+                                              "basthon_only": 0, "match_conf": mconf})
+        if is_class:
+            e["basthon_tier"] = "classe"
+        if r["mathadata_id"] not in deployed.get(cap_acc, set()):
+            e["basthon_only"] = 1
+    ab_df = pd.DataFrame(list(ab_users.values()), columns=["teacher", "basthon_tier", "basthon_only", "match_conf"])
+    ab_df.sort_values("teacher").to_csv(OUT / "basthon_ab_users.csv", index=False)
     public_rows = [row for row in by_activity if row["public"]]
     locked_rows = [row for row in by_activity if not row["public"]]
 

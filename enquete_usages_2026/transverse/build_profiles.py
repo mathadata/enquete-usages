@@ -255,6 +255,19 @@ for tid in POP:
 PROF = pd.DataFrame(prof_rows)
 PY = PY.drop(columns=['teacher_full'])
 
+# flag Basthon (appariement individuel A/B, pseudonyme md5[:8]) — source : compute_site_cross.py.
+# Usage estimé via les liens courts URLR, JAMAIS additionné aux compteurs Capytale.
+_bu = f"{_ENQ}/usage-urlr/data/basthon_ab_users.csv"
+if _os.path.exists(_bu):
+    bu = pd.read_csv(_bu, dtype=str, keep_default_na=False)
+    PROF['basthon_user'] = PROF['teacher'].isin(set(bu['teacher'])).astype(int)
+    PROF['basthon_evidence'] = PROF['teacher'].map(dict(zip(bu['teacher'], bu['basthon_tier']))).fillna('')
+    PROF['basthon_only'] = PROF['teacher'].map(dict(zip(bu['teacher'], bu['basthon_only']))).fillna('')
+else:
+    PROF['basthon_user'] = 0
+    PROF['basthon_evidence'] = ''
+    PROF['basthon_only'] = ''
+
 # ───────────────────────────── 7. Sauvegarde + agrégats ─────────────────────────────
 PY.sort_values(['teacher','sy']).to_csv(f"{OUT}/profiles_teacher_year.csv", index=False)
 PROF.sort_values('teacher').to_csv(f"{OUT}/profiles_teacher.csv", index=False)
