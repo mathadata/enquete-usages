@@ -174,6 +174,10 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
           "diagnostic URLR : élèves estimés total = Σ clics (1 clic=1 élève)")
     check(fu['diagnostics']['eleves_estimes_classe']==int(_cc[(_uu>=5)|((_uu<=4)&(_cc>=10))].sum()),
           "diagnostic URLR : élèves estimés classe = Σ clics des classes élargies")
+    check(sum(a['eleves_estimes_classe'] for a in fu['by_activity'])==fu['diagnostics']['eleves_estimes_classe'],
+          "URLR : Σ élèves classe par activité = diagnostic")
+    check(sum(a['seances_classe_estimee'] for a in fu['by_activity'])==fu['diagnostics']['sessions_classe_uniques_ou_nat'],
+          "URLR : Σ séances classe par activité = diagnostic")
     check(fuc['urlr_usage_classe_estime']==int(us.loc[observable,'usage_classe_estime'].eq('True').sum()),
           "facts_urlr_cross : séances URLR ≥5 alignées")
     check(fuc['urlr_salves_5_clics_ou_plus']==int((pd.to_numeric(us.loc[observable,'clicks'])>=5).sum()),

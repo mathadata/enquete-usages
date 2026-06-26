@@ -236,6 +236,11 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
   (dont <b>__NAT__ masquées par un NAT</b>), contre __CLASS__ par les uniques seuls. Sous l'hypothèse
   <b>1 clic = 1 élève</b> (réouvertures négligées, le prof passe par le lien direct), ces séances totalisent
   <b>~__ELEVESCLASSE__ élèves</b> (participations estimées, sur __ELEVESTOT__ clics URLR au total).</p></div>
+  <figure style="margin-top:18px"><p class="figtitle">Élèves Basthon estimés par activité</p>
+    <p class="figsub">1 clic = 1 élève · total (tous clics) vs part en séances de taille classe</p>
+    <div class="legend"><span><i style="background:var(--grey)"></i>total</span><span><i style="background:var(--green)"></i>en séances classe</span></div>
+    <div id="elevesActivite" class="chart"></div>
+    <p class="cap">Participations estimées (un même élève sur deux séances compte deux fois), jamais additionnées aux élèves Capytale.</p></figure>
 </div></section>
 
 <section><div class="wrap">
@@ -376,6 +381,8 @@ const actClicks=U.by_activity.map(r=>({label:labels[r.mathadata_id],clicks:r.cli
 hBars("activityClicks",actClicks,[{key:"clicks",color:"var(--blue)"},{key:"class",color:"var(--green)"},{key:"clickClass",color:"var(--rose)"}],{left:130});
 const funnel=[{label:"Pages",v:S.totals.module_views},{label:"Capytale",v:S.totals.capytale_clicks},{label:"Basthon direct",v:S.totals.basthon_direct_clicks},{label:"Copies",v:S.totals.basthon_short_copies},{label:"Salves URLR",v:U.sessions_estimees}];
 vBars("siteFunnel",funnel,[{key:"v",color:"var(--green)"}],{max:S.totals.module_views});
+const elv=U.by_activity.map(r=>({label:labels[r.mathadata_id],total:r.clics,classe:r.eleves_estimes_classe})).sort((a,b)=>b.total-a.total);
+hBars("elevesActivite",elv,[{key:"total",color:"var(--grey)"},{key:"classe",color:"var(--green)"}],{left:130});
 </script>
 </body></html>"""
 

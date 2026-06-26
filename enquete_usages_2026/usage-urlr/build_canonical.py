@@ -238,6 +238,9 @@ def main():
     by_activity = []
     for mid, group in sessions.groupby("mathadata_id"):
         obs = group[group["capytale_observable"]]
+        gclass = (group["n_visiteurs_uniques_urlr"] >= K.CLASSE_MIN) | (
+            (group["n_visiteurs_uniques_urlr"] <= 4) & (group["clicks"] >= K.SEANCE_RICHE_MIN)
+        )
         by_activity.append({
             "mathadata_id": mid,
             "mathadata_title": group.iloc[0]["mathadata_title"],
@@ -250,6 +253,8 @@ def main():
             "seance_riche_estimee": int(group["seance_riche_estimee"].sum()),
             "salves_5_clics_ou_plus": int((group["clicks"] >= K.CLASSE_MIN).sum()),
             "salves_10_clics_ou_plus": int((group["clicks"] >= K.SEANCE_RICHE_MIN).sum()),
+            "seances_classe_estimee": int(gclass.sum()),
+            "eleves_estimes_classe": int(group.loc[gclass, "clicks"].sum()),
             "clics_par_unique_de_fenetre": round(
                 group["clicks"].sum() / group["n_visiteurs_uniques_urlr"].sum(), 2
             ),

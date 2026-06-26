@@ -139,6 +139,8 @@
    "seance_riche_estimee": 3,
    "salves_5_clics_ou_plus": 20,
    "salves_10_clics_ou_plus": 13,
+   "seances_classe_estimee": 16,
+   "eleves_estimes_classe": 290,
    "clics_par_unique_de_fenetre": 2.31,
    "modes_observables": {
     "compatible_remplacement": 6,
@@ -161,6 +163,8 @@
    "seance_riche_estimee": 2,
    "salves_5_clics_ou_plus": 28,
    "salves_10_clics_ou_plus": 20,
+   "seances_classe_estimee": 20,
+   "eleves_estimes_classe": 440,
    "clics_par_unique_de_fenetre": 3.11,
    "modes_observables": {
     "compatible_remplacement": 4,
@@ -183,6 +187,8 @@
    "seance_riche_estimee": 0,
    "salves_5_clics_ou_plus": 1,
    "salves_10_clics_ou_plus": 1,
+   "seances_classe_estimee": 1,
+   "eleves_estimes_classe": 11,
    "clics_par_unique_de_fenetre": 2.22,
    "modes_observables": {
     "compatible_remplacement": 0,
@@ -205,6 +211,8 @@
    "seance_riche_estimee": 0,
    "salves_5_clics_ou_plus": 1,
    "salves_10_clics_ou_plus": 1,
+   "seances_classe_estimee": 1,
+   "eleves_estimes_classe": 35,
    "clics_par_unique_de_fenetre": 3.62,
    "modes_observables": {
     "compatible_remplacement": 0,
@@ -227,6 +235,8 @@
    "seance_riche_estimee": 0,
    "salves_5_clics_ou_plus": 7,
    "salves_10_clics_ou_plus": 6,
+   "seances_classe_estimee": 6,
+   "eleves_estimes_classe": 157,
    "clics_par_unique_de_fenetre": 7.16,
    "modes_observables": {
     "compatible_remplacement": 0,
@@ -249,6 +259,8 @@
    "seance_riche_estimee": 0,
    "salves_5_clics_ou_plus": 0,
    "salves_10_clics_ou_plus": 0,
+   "seances_classe_estimee": 0,
+   "eleves_estimes_classe": 0,
    "clics_par_unique_de_fenetre": 1.14,
    "modes_observables": {
     "compatible_remplacement": 0,
