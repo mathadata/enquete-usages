@@ -150,12 +150,23 @@
    "10_19": 1,
    "20_plus": 2
   },
+  "candidate_burst_click_bands": {
+   "1": 31,
+   "2_4": 8,
+   "5_9": 6,
+   "10_19": 7,
+   "20_29": 2,
+   "30_plus": 3
+  },
   "candidate_burst_modes": {
    "compatible_remplacement": 5,
    "compatible_depannage": 5,
    "indetermine": 47
   },
   "candidate_sessions_ge5_uniques": 6,
+  "candidate_sessions_ge5_clics": 18,
+  "candidate_sessions_ge10_clics": 12,
+  "candidate_sessions_nat_suspect": 8,
   "locked_activities": {
    "candidate_sessions": 33,
    "strong_candidate_sessions_24h": 8,

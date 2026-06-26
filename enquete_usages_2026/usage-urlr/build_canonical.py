@@ -123,6 +123,12 @@ def session_diagnostics(sessions):
         "sessions_5_clics_ou_plus": int((clicks >= K.CLASSE_MIN).sum()),
         "sessions_10_clics_ou_plus": int((clicks >= K.SEANCE_RICHE_MIN).sum()),
         "sessions_20_clics_ou_plus": int((clicks >= K.GRANDE_CLASSE_MIN).sum()),
+        # NAT-suspecte : peu d'uniques mais beaucoup de clics → classe derrière une IP commune.
+        "sessions_nat_suspect": int(((size <= 4) & (clicks >= K.SEANCE_RICHE_MIN)).sum()),
+        # classe Basthon estimée élargie = seuil uniques OU NAT-suspecte (capte les deux types).
+        "sessions_classe_uniques_ou_nat": int(
+            ((size >= K.CLASSE_MIN) | ((size <= 4) & (clicks >= K.SEANCE_RICHE_MIN))).sum()
+        ),
         "school_hours": {
             "definition": "lundi-vendredi, début entre 07:00 et 17:59 Europe/Paris",
             "sessions": int(school_hours.sum()),
@@ -217,6 +223,9 @@ def main():
     sessions.loc[indeterminate_mask, "indeterminate_reason"] = sessions.loc[
         indeterminate_mask
     ].apply(indeterminate_reason, axis=1)
+    sessions["nat_suspect"] = (sessions["n_visiteurs_uniques_urlr"] <= 4) & (
+        sessions["clicks"] >= K.SEANCE_RICHE_MIN
+    )
     sessions.to_csv(OUT / "sessions.csv", index=False)
 
     observable_sessions = sessions[sessions["capytale_observable"]].copy()

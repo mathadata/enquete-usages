@@ -252,19 +252,31 @@ def main():
             "public": session.mathadata_id == "3518185",
             "mode": session.mode_historique,
             "n_uniques": int(session.n_visiteurs_uniques_urlr),
+            "clicks": int(session.clicks),
             "user_id": user_id,
         })
     direct_df = pd.DataFrame(direct_candidates)
     # (b) Profil de taille/mode des salves QUI ONT un candidat « clic direct » connu.
     # Agrégat exploratoire, sans nominatif : caractérise l'entonnoir d'adoption Basthon.
+    # Les CLICS détectent les classes masquées par un NAT établissement (peu d'uniques, bcp de clics) ;
+    # les réouvertures multiples par un même élève sont négligées.
     cand_df = direct_df[direct_df["confidence"].isin(["A7", "B30"])]
     cand_sz = cand_df["n_uniques"]
+    cand_cl = cand_df["clicks"]
     cand_size_bands = {
         "1": int((cand_sz == 1).sum()),
         "2_4": int(cand_sz.between(2, 4).sum()),
         "5_9": int(cand_sz.between(5, 9).sum()),
         "10_19": int(cand_sz.between(10, 19).sum()),
         "20_plus": int((cand_sz >= 20).sum()),
+    }
+    cand_click_bands = {
+        "1": int((cand_cl == 1).sum()),
+        "2_4": int(cand_cl.between(2, 4).sum()),
+        "5_9": int(cand_cl.between(5, 9).sum()),
+        "10_19": int(cand_cl.between(10, 19).sum()),
+        "20_29": int(cand_cl.between(20, 29).sum()),
+        "30_plus": int((cand_cl >= 30).sum()),
     }
     public_rows = [row for row in by_activity if row["public"]]
     locked_rows = [row for row in by_activity if not row["public"]]
@@ -346,10 +358,16 @@ def main():
                 ].nunique()
             ),
             "candidate_burst_size_bands": cand_size_bands,
+            "candidate_burst_click_bands": cand_click_bands,
             "candidate_burst_modes": counts(
                 cand_df["mode"], ("compatible_remplacement", "compatible_depannage", "indetermine")
             ),
             "candidate_sessions_ge5_uniques": int((cand_df["n_uniques"] >= K.CLASSE_MIN).sum()),
+            "candidate_sessions_ge5_clics": int((cand_df["clicks"] >= K.CLASSE_MIN).sum()),
+            "candidate_sessions_ge10_clics": int((cand_df["clicks"] >= K.SEANCE_RICHE_MIN).sum()),
+            "candidate_sessions_nat_suspect": int(
+                ((cand_df["n_uniques"] <= 4) & (cand_df["clicks"] >= K.SEANCE_RICHE_MIN)).sum()
+            ),
             "locked_activities": {
                 "candidate_sessions": int(
                     (

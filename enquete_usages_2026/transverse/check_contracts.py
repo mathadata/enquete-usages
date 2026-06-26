@@ -161,6 +161,15 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
     check(fu['diagnostics']['sessions_un_unique']==bands['1'], "diagnostic URLR : salves à un unique")
     check(fu['diagnostics']['sessions_5_clics_ou_plus']==int((pd.to_numeric(us['clicks'])>=5).sum()),
           "diagnostic URLR : salves à ≥5 clics alignées")
+    _uu=pd.to_numeric(us['n_visiteurs_uniques_urlr']); _cc=pd.to_numeric(us['clicks'])
+    check('nat_suspect' in us.columns and set(us['nat_suspect'])<={'True','False'},
+          "colonne URLR nat_suspect présente et booléenne")
+    check(fu['diagnostics']['sessions_nat_suspect']==int(((_uu<=4)&(_cc>=10)).sum()),
+          "diagnostic URLR : séances NAT-suspectes alignées (uniques≤4 & clics≥10)")
+    check(fu['diagnostics']['sessions_classe_uniques_ou_nat']==int((( _uu>=5)|((_uu<=4)&(_cc>=10))).sum()),
+          "diagnostic URLR : classe élargie (uniques≥5 OU NAT) alignée")
+    check(int((us['nat_suspect'].eq('True')).sum())==fu['diagnostics']['sessions_nat_suspect'],
+          "colonne nat_suspect = compteur facts")
     check(fuc['urlr_usage_classe_estime']==int(us.loc[observable,'usage_classe_estime'].eq('True').sum()),
           "facts_urlr_cross : séances URLR ≥5 alignées")
     check(fuc['urlr_salves_5_clics_ou_plus']==int((pd.to_numeric(us.loc[observable,'clicks'])>=5).sum()),
@@ -183,6 +192,14 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
           "URLR candidats : modes de salve exhaustifs")
     check(_hc['candidate_sessions_ge5_uniques']==sum(_hc['candidate_burst_size_bands'][b] for b in ('5_9','10_19','20_plus')),
           "URLR candidats : salves ≥5 uniques alignées")
+    check(sum(_hc['candidate_burst_click_bands'].values())==_hc['candidate_sessions'],
+          "URLR candidats : bandes de clics exhaustives")
+    check(_hc['candidate_sessions_ge5_clics']==sum(_hc['candidate_burst_click_bands'][b] for b in ('5_9','10_19','20_29','30_plus')),
+          "URLR candidats : salves ≥5 clics alignées")
+    check(_hc['candidate_sessions_ge10_clics']==sum(_hc['candidate_burst_click_bands'][b] for b in ('10_19','20_29','30_plus')),
+          "URLR candidats : salves ≥10 clics alignées")
+    check(_hc['candidate_sessions_nat_suspect']<=_hc['candidate_sessions_ge10_clics'],
+          "URLR candidats : NAT-suspect inclus dans ≥10 clics")
     dashboard=f"{_ENQ}/usage-urlr/dashboard_urlr.html"
     check(_os.path.exists(dashboard), "dashboard URLR généré présent")
     if _os.path.exists(dashboard):

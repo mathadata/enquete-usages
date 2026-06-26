@@ -104,6 +104,15 @@ Toutes les dates sont converties en **Europe/Paris** avant calcul. Trois années
   n'est toujours pas un nombre d'élèves : réouvertures, robots et autres usages restent possibles.
   Les seuils `≥ 5/10/20 clics` sont **exploratoires** et ne remplacent pas les définitions
   canoniques fondées sur les uniques.
+- **Séance Basthon NAT-suspecte** = séance Basthon estimée à **≤ 4 visiteurs uniques URLR mais
+  ≥ 10 clics**. Une salle informatique derrière une **IP/NAT commune** compresse plusieurs élèves
+  en un seul « unique » ; les réouvertures multiples par un même élève étant négligeables, les
+  **clics approchent alors le nombre de participants**. C'est la meilleure détection disponible
+  d'une **classe Basthon** quand l'établissement est en NAT, là où le seuil fondé sur les uniques
+  échoue. Statut **estimé**.
+- **Classe Basthon estimée (élargie)** = séance Basthon avec **≥ 5 uniques URLR OU NAT-suspecte**.
+  Réunit les classes « IP variées » (vues par les uniques) et les classes « NAT » (vues par les
+  clics). Reste **estimée** et **jamais additionnée** aux effectifs Capytale sans le préciser.
 - **Scan URLR** = valeur `scans` renvoyée séparément pour les ouvertures issues d'un QR code.
 - **Jour URLR** = journée civile en `Europe/Paris`. Les tables quotidiennes omettent les jours sans
   `visit`, `click` ni `scan`.
