@@ -113,6 +113,11 @@ Toutes les dates sont converties en **Europe/Paris** avant calcul. Trois années
 - **Classe Basthon estimée (élargie)** = séance Basthon avec **≥ 5 uniques URLR OU NAT-suspecte**.
   Réunit les classes « IP variées » (vues par les uniques) et les classes « NAT » (vues par les
   clics). Reste **estimée** et **jamais additionnée** aux effectifs Capytale sans le préciser.
+- **Élève Basthon estimé** = **1 clic URLR** = 1 élève, sous l'hypothèse (assumée par l'équipe) que
+  les réouvertures d'un même élève sont négligeables et que le professeur passe par le **lien direct**
+  (pas le lien court). C'est une **participation estimée**, jamais un élève unique consolidé (un même
+  élève sur deux séances compte deux fois), et **jamais additionnée** aux élèves Capytale sans le
+  préciser. Total ≈ Σ clics ; sous-total « classe » = Σ clics des classes Basthon estimées élargies.
 - **Scan URLR** = valeur `scans` renvoyée séparément pour les ouvertures issues d'un QR code.
 - **Jour URLR** = journée civile en `Europe/Paris`. Les tables quotidiennes omettent les jours sans
   `visit`, `click` ni `scan`.

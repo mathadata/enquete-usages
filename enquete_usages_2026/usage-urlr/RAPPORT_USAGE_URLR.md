@@ -35,11 +35,12 @@ Trois niveaux de preuve doivent rester séparés :
 La variable reste nommée `n_visiteurs_uniques_urlr`, conformément à la source. Elle ne doit jamais
 être renommée `n_eleves`.
 
-Dans le contexte MathAData, le **nombre de clics est probablement un meilleur proxy du nombre de
-participants** que `unique_visits` : les élèves d'une salle informatique partagent souvent la même
-IP publique, et il y a peu de raison qu'un élève clique plusieurs fois sur le lien court. Ce proxy
-n'est toutefois pas une mesure certaine : un rechargement, une reconnexion ou une réouverture
-compte comme un nouveau clic.
+Dans le contexte MathAData, le **nombre de clics est un meilleur proxy du nombre de participants**
+que `unique_visits` : les élèves d'une salle informatique partagent souvent la même IP publique, et
+il y a peu de raison qu'un élève clique plusieurs fois sur le lien court. **L'équipe adopte donc la
+convention de travail « 1 clic = 1 élève »** pour estimer les participations Basthon — en gardant à
+l'esprit qu'il s'agit d'une estimation (participations, pas élèves uniques consolidés) et qu'un
+rechargement ou une reconnexion compte comme un clic.
 
 ---
 
@@ -64,11 +65,16 @@ six activités ; les 10 remplacements compatibles, **5,7 %**. Ce sont des **plan
 estimation exhaustive du canal Basthon : 157 salves sur 206 n'ont qu'un seul « unique », alors que
 certaines comptent plusieurs dizaines de clics.
 
-En appliquant exactement les mêmes règles au **nombre de clics** — lecture exploratoire, fondée sur
-l'hypothèse « un clic ≈ un participant » — la classification devient **43 remplacements
-compatibles, 7 dépannages compatibles et 152 indéterminés**. Cette sensibilité est probablement
-plus proche de l'usage en salle informatique, mais elle peut surestimer les groupes si des élèves
-réouvrent plusieurs fois le lien.
+En appliquant exactement les mêmes règles au **nombre de clics** — sous la convention adoptée
+« **1 clic = 1 élève** » — la classification devient **43 remplacements compatibles, 7 dépannages
+compatibles et 152 indéterminés**.
+
+En consolidant les deux lectures — **classe Basthon estimée élargie = ≥ 5 uniques OU NAT-suspecte**
+(≤ 4 uniques mais ≥ 10 clics) — on détecte **44 séances de taille classe** (12 par les uniques +
+32 masquées par un NAT), contre 12 par les uniques seuls. Ces séances totalisent **~933 élèves
+estimés** (participations, 1 clic = 1 élève ; ~1 213 clics URLR au total). Ce chiffre est
+**estimé**, séparé et **jamais additionné** aux effectifs Capytale ; il est désormais affiché en
+note dans la synthèse et le flux.
 
 Les principaux éclairages sont les suivants :
 
@@ -365,6 +371,10 @@ individuelle ou identifiant Payload ne doit apparaître dans le dépôt ou la pa
    secours.
 4. **Le remplacement complet devient mesurable prospectivement.** Les copies suivies permettront
    de repérer les professeurs qui choisissent Basthon pour toute la classe.
+5. **Un volet Basthon estimé est désormais affiché à part.** ~44 séances de taille classe et
+   ~933 élèves estimés (1 clic = 1 élève) apparaissent en note dans la synthèse et le flux ; un flag
+   pseudonyme `basthon_user` marque dans `profiles_teacher.csv` les 3 professeurs Capytale appariés
+   A/B identifiés comme utilisateurs Basthon. Tout reste estimé, séparé et non additionné.
 
 ### Ce qui ne change pas
 

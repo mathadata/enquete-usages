@@ -129,6 +129,12 @@ def session_diagnostics(sessions):
         "sessions_classe_uniques_ou_nat": int(
             ((size >= K.CLASSE_MIN) | ((size <= 4) & (clicks >= K.SEANCE_RICHE_MIN))).sum()
         ),
+        # Convention 1 clic = 1 élève (réouvertures négligées ; le prof passe par le lien direct,
+        # pas le lien court) → participations élèves estimées (pas des élèves uniques).
+        "eleves_estimes_total": int(clicks.sum()),
+        "eleves_estimes_classe": int(
+            clicks[(size >= K.CLASSE_MIN) | ((size <= 4) & (clicks >= K.SEANCE_RICHE_MIN))].sum()
+        ),
         "school_hours": {
             "definition": "lundi-vendredi, début entre 07:00 et 17:59 Europe/Paris",
             "sessions": int(school_hours.sum()),

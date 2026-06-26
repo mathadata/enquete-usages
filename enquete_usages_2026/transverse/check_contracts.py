@@ -170,6 +170,10 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
           "diagnostic URLR : classe élargie (uniques≥5 OU NAT) alignée")
     check(int((us['nat_suspect'].eq('True')).sum())==fu['diagnostics']['sessions_nat_suspect'],
           "colonne nat_suspect = compteur facts")
+    check(fu['diagnostics']['eleves_estimes_total']==int(_cc.sum())==fu['clicks'],
+          "diagnostic URLR : élèves estimés total = Σ clics (1 clic=1 élève)")
+    check(fu['diagnostics']['eleves_estimes_classe']==int(_cc[(_uu>=5)|((_uu<=4)&(_cc>=10))].sum()),
+          "diagnostic URLR : élèves estimés classe = Σ clics des classes élargies")
     check(fuc['urlr_usage_classe_estime']==int(us.loc[observable,'usage_classe_estime'].eq('True').sum()),
           "facts_urlr_cross : séances URLR ≥5 alignées")
     check(fuc['urlr_salves_5_clics_ou_plus']==int((pd.to_numeric(us.loc[observable,'clicks'])>=5).sum()),
@@ -263,6 +267,8 @@ if _os.path.exists(f"{urlr_dir}/sessions.csv"):
             f'24 h : {_hist["strong_candidate_sessions_24h"]} salves, dont {_hist["strong_sessions_with_capytale_match_ab"]} appariées',
             f'{_diag["sessions_classe_uniques_ou_nat"]} séances Basthon de taille classe',
             f'{_diag["sessions_nat_suspect"]} masquées par un NAT',
+            f'~{_diag["eleves_estimes_classe"]} élèves',
+            f'{_diag["eleves_estimes_total"]} clics URLR au total',
         ]
         missing=[e for e in expected if e not in dh]
         check(not missing, "dashboard URLR : chiffres en clair concordants avec les facts"
@@ -304,10 +310,11 @@ check(f"{fr['population']['reached_classe_ge5']} ont atteint une classe" in v2, 
 check(f"{fr['population']['reached_seance_riche_ge10']} une séance riche" in v2, f"volet2: funnel séance riche ≥10 = {fr['population']['reached_seance_riche_ge10']}")
 # note Basthon (estimé, non additionné) en pied de synthèse + flux = facts URLR (anti-dérive)
 _n44=fu['diagnostics']['sessions_classe_uniques_ou_nat']; _n32=fu['diagnostics']['sessions_nat_suspect']
+_n933=fu['diagnostics']['eleves_estimes_classe']
 for _f in ("transverse/dashboard_synthese.html","transverse/dashboard_flux_profs.html"):
     _h=rd(_f)
-    check(f"~{_n44} séances Basthon" in _h and f"{_n32} masquées par un NAT" in _h,
-          f"note Basthon ({_f.rsplit('/',1)[-1]}) = facts URLR séances classe={_n44}/NAT={_n32}")
+    check(f"~{_n44} séances Basthon" in _h and f"{_n32} masquées par un NAT" in _h and f"~{_n933} élèves" in _h,
+          f"note Basthon ({_f.rsplit('/',1)[-1]}) = facts URLR séances={_n44}/NAT={_n32}/élèves={_n933}")
 
 print(f"\n{'❌ '+str(len(fails))+' contrat(s) cassé(s)' if fails else '✅ tous les contrats sont respectés'}")
 sys.exit(1 if fails else 0)

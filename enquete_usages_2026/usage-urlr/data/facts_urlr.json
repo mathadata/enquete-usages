@@ -61,6 +61,8 @@
   "sessions_20_clics_ou_plus": 20,
   "sessions_nat_suspect": 32,
   "sessions_classe_uniques_ou_nat": 44,
+  "eleves_estimes_total": 1213,
+  "eleves_estimes_classe": 933,
   "school_hours": {
    "definition": "lundi-vendredi, début entre 07:00 et 17:59 Europe/Paris",
    "sessions": 153,

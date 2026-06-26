@@ -66,6 +66,8 @@ def build_replacements(payload):
         "__PCTSOUS5__": str(pct(diag["sessions_sous_5_uniques"], u["sessions_estimees"])),
         "__NATCLASS__": str(diag["sessions_classe_uniques_ou_nat"]),
         "__NAT__": str(diag["sessions_nat_suspect"]),
+        "__ELEVESCLASSE__": str(diag["eleves_estimes_classe"]),
+        "__ELEVESTOT__": str(diag["eleves_estimes_total"]),
         "__RATIOMIN__": dec(round(lo["clicks_par_unique_de_fenetre"], 1)),
         "__MONTHMIN__": FR_MONTHS[int(lo["month"][5:7])],
         "__RATIOMAX__": dec(round(hi["clicks_par_unique_de_fenetre"], 1)),
@@ -231,7 +233,9 @@ a{color:var(--blue)}svg{display:block;width:100%;overflow:visible}
   Une grande classe partageant une IP peut tomber dans « petite salve » ou « indéterminé ».</p></div>
   <div class="callout"><p><b>Correction par les clics.</b> En comptant une classe derrière un NAT
   (peu d'uniques, beaucoup de clics) comme une classe, on estime <b>__NATCLASS__ séances Basthon de taille classe</b>
-  (dont <b>__NAT__ masquées par un NAT</b>), contre __CLASS__ par les uniques seuls.</p></div>
+  (dont <b>__NAT__ masquées par un NAT</b>), contre __CLASS__ par les uniques seuls. Sous l'hypothèse
+  <b>1 clic = 1 élève</b> (réouvertures négligées, le prof passe par le lien direct), ces séances totalisent
+  <b>~__ELEVESCLASSE__ élèves</b> (participations estimées, sur __ELEVESTOT__ clics URLR au total).</p></div>
 </div></section>
 
 <section><div class="wrap">
