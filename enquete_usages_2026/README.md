@@ -70,7 +70,7 @@ reviennent), rétention 34 % (cohorte éligible classe ≥5), prédicteurs « do
 confirmés (collectif intra-établissement, « effet formation » = artefact de composition).
 - Rapport : [`transverse/TYPOLOGIE_PROFILS_2026.md`](transverse/TYPOLOGIE_PROFILS_2026.md)
 - Page web (canonique) : `transverse/dashboard_typologie.html` → https://mathadata.github.io/enquete-usages/typologie.html
-- Pipeline : `build_master.py` (table maître) → `workflow_typologie.js` (enquête + vérif) → charts. Sources de vérité : `transverse/data/facts_typologie.json`, `facts_investigation.json`, `master_teachers.csv` (pseudonymisé). Graphiques : `transverse/charts/`.
+- Pipeline : `build_master.py` (table maître) → `workflow_typologie.js` (enquête + vérif ; **multi-agents, nécessite « ultracode »**, cf. `CLAUDE.md` §5) → charts. Sources de vérité : `transverse/data/facts_typologie.json`, `facts_investigation.json`, `master_teachers.csv` (pseudonymisé). Graphiques : `transverse/charts/`.
 
 **Séances — Anatomie d'une séance** (pendant « la séance » du précédent « le prof ») : comment l'outil se vit en classe — rythmes horaires, scénarios d'usage (déploiement, soutien récurrent, demi-groupe, reprises, travail-maison), engagement élève, galerie de cas réels. Enquête vérifiée (14 questions).
 - Rapport : [`transverse/RAPPORT_SEANCES_2026.md`](transverse/RAPPORT_SEANCES_2026.md)

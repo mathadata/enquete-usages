@@ -13,7 +13,7 @@ Croisement du parcours amont **nominatif** (mathadata.fr, snapshot Payload) avec
 2. `compute_cross_facts.py` — **`data/facts_cross.json`** (source de vérité) + tables par UAI.
 3. `match_individuals.py` — appariement individuel inféré → `data/match_candidates.csv` (pseudonymisé) + `match_validation.json`.
 4. `make_charts_volet2.py` — graphiques PNG (`charts/`).
-5. `workflow_volet2.js` — orchestration multi-agents : 8 deep-dives → vérification adversariale → synthèse (sorties dans `data/SEC_*.md`, `sections_final.json`, `synthese_final.md`).
+5. `workflow_volet2.js` — orchestration multi-agents (**nécessite « ultracode »**, cf. `CLAUDE.md` §5) : 8 deep-dives → vérification adversariale → synthèse (sorties dans `data/SEC_*.md`, `sections_final.json`, `synthese_final.md`).
 
 ## Le pont de données
 `consultation_rss.file == "capytale2.ac-paris.fr/web/b/<id>"` ⟹ `<id> == mathadata_id` Capytale. Seul lien direct (clic nominatif → activité Capytale, daté). S'arrête au clic ; le clonage ENT reste anonyme.

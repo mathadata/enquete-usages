@@ -97,6 +97,19 @@ il **lit** ces faits.
 > (d) les **rapports `.md`** (rédigés). La rétention **canonique** (77/26/33,8 %) vit dans
 > `facts_typologie.json` (régénéré), jamais dans `facts_investigation.json`.
 
+> 🔑 **Régénérer un `workflow_*.js` exige d'activer « ultracode ».** Ces `workflow_*.js`
+> (`site-vers-classe/workflow_volet2.js`, `transverse/workflow_typologie.js`) sont des scripts de
+> **l'outil Workflow** de Claude Code : ils appellent `agent()`/`pipeline()` et lancent des
+> **sous-agents**. Or Claude n'orchestre des multi-agents que sur **opt-in explicite** — mot-clé
+> **`ultracode`** dans la demande, ultracode activé pour la session, ou « lance le workflow …js ».
+> **Sans cet opt-in, la régénération de ces artefacts one-shot est bloquée** (Claude ne lancera pas
+> l'orchestration) — c'est normal, pas un bug. Le pipeline déterministe (`rebuild_all.sh`, Python
+> pur) et `check_contracts.py` n'en ont **pas** besoin. ⚠️ Détail d'exécution : ces scripts découvrent
+> le snapshot via `node:fs` ; l'outil Workflow n'a pas d'accès disque → exécuter une **copie adaptée**
+> où le chemin du snapshot est injecté en dur (retirer `import fs`), puis écrire les sorties depuis la
+> valeur de retour du workflow. Contrôler l'**absence de PII** (noms/e-mails) dans les `.md`/`.json`
+> régénérés avant tout commit : les contrats ne scannent la PII que dans les `.csv`.
+
 **Socle partagé** : `enquete_usages_2026/enquete_common.py` (= `K`) — **source unique** des constantes
 (`DEMO`/`PIO`, seuils `CLASSE_MIN`…, populations nommées `K.EXPECT`), de `school_year`, `exclude_special`,
 `sanitize_json`. **Tout script importe K** ; on ne redéfinit JAMAIS une exclusion ou un seuil localement

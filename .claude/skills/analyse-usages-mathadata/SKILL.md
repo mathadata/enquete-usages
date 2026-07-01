@@ -40,6 +40,11 @@ faire sortir de données personnelles du périmètre local autorisé.
     `python3 enquete_usages_2026/site-vers-classe/match_individuals.py --local-only`, puis lire
     `_local/match_nominatif.csv`.
   `rebuild_all.sh` ne sert que si l'utilisateur demande d'actualiser ou recalculer les analyses.
+- **Régénérer les enquêtes multi-agents** (`workflow_volet2.js` → `SEC_*`/`sections_final`/`synthese_final` ;
+  `workflow_typologie.js` → `facts_investigation`/typologie) **exige d'activer « ultracode »** : ce sont des
+  scripts de l'outil Workflow (multi-agents), et Claude ne lance l'orchestration que sur opt-in explicite
+  (mot-clé `ultracode`, session ultracode, ou « lance le workflow »). Sinon la tâche est **bloquée** — le
+  dire à l'utilisateur plutôt que de bricoler un substitut. Détails et garde-fous PII : `CLAUDE.md` §5.
 
 ## Workflow
 
