@@ -16,7 +16,7 @@ en UN module documenté et reproductible.
 
 ENTRÉES (déjà canoniques) :
   - usage-capytale/data/usages_enriched.csv, sessions.csv, teachers.csv   (Capytale, versionné)
-  - site-vers-classe/data/match_candidates.csv                             (75 paires, versionné, sans PII)
+  - site-vers-classe/data/match_candidates.csv                             (70 paires, versionné, sans PII)
   - <scratch>/payload_users_work.csv                             (site, id-only, LOCAL via build_payload_canonical.py)
   - <scratch>/match_nominatif.csv                                (pont site_code→site_id, LOCAL/PII — lu, jamais écrit)
   - snapshot etablissements.json                                 (type collège/lycée, LOCAL)
@@ -155,7 +155,7 @@ def retention(group):
                 revenu=(len(yrs) >= 2), censored=censored)
 
 # ───────────────────────────── 5. AXE 2 — canal + formation (cross-mondes) ─────────────────────────────
-# 5a. appariement individuel (75 paires) : cap_acc = md5[:8]
+# 5a. appariement individuel (70 paires) : cap_acc = md5[:8]
 mc = pd.read_csv(f"{V2}/match_candidates.csv", dtype=str, keep_default_na=False)
 matched = {r['cap_acc'][:8]: dict(statut=r['statut'], ftype=r['ftype'], site_code=r['site_code'])
            for _,r in mc.iterrows()}

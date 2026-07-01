@@ -4,13 +4,13 @@
   "testeurs_purs": 37,
   "seuil_classe": 5,
   "canal": {
-    "capytale_direct": 156,
-    "via_site": 104
+    "capytale_direct": 154,
+    "via_site": 106
   },
   "canal_source": {
-    "aucune": 140,
-    "individuel": 74,
-    "proxy_etab": 46
+    "aucune": 141,
+    "individuel": 69,
+    "proxy_etab": 50
   },
   "formation_statut": {
     "jamais": 193,
@@ -18,13 +18,13 @@
   },
   "formation_source": {
     "aucune": 193,
-    "individuel": 40,
-    "proxy_etab": 27
+    "individuel": 36,
+    "proxy_etab": 31
   },
   "formation_timing": {
     "na": 193,
-    "motrice": 61,
-    "consolidation": 6
+    "motrice": 62,
+    "consolidation": 5
   },
   "niveau": {
     "lycee": 218,
@@ -74,23 +74,23 @@
   },
   "traj_canal_devenir": {
     "capytale_direct|non": 44,
-    "capytale_direct|rec": 37,
+    "capytale_direct|rec": 35,
     "capytale_direct|rev": 18,
     "via_site|non": 7,
-    "via_site|rec": 62,
+    "via_site|rec": 64,
     "via_site|rev": 8
   },
   "traj_canal_y1_devenir": {
     "capytale_direct|multi|non": 10,
-    "capytale_direct|multi|rec": 9,
+    "capytale_direct|multi|rec": 8,
     "capytale_direct|multi|rev": 8,
     "capytale_direct|uniq|non": 34,
-    "capytale_direct|uniq|rec": 28,
+    "capytale_direct|uniq|rec": 27,
     "capytale_direct|uniq|rev": 10,
-    "via_site|multi|rec": 24,
+    "via_site|multi|rec": 25,
     "via_site|multi|rev": 5,
     "via_site|uniq|non": 7,
-    "via_site|uniq|rec": 38,
+    "via_site|uniq|rec": 39,
     "via_site|uniq|rev": 3
   },
   "n_reached_classe": 176,
@@ -100,28 +100,27 @@
       "xtab": {
         "capytale_direct|forme|multi": 3,
         "capytale_direct|forme|ss": 1,
-        "capytale_direct|forme|uniq": 1,
-        "capytale_direct|jamais|multi": 25,
+        "capytale_direct|jamais|multi": 24,
         "capytale_direct|jamais|ss": 33,
         "capytale_direct|jamais|uniq": 70,
         "via_site|forme|multi": 24,
         "via_site|forme|ss": 6,
-        "via_site|forme|uniq": 23,
-        "via_site|jamais|multi": 7,
+        "via_site|forme|uniq": 24,
+        "via_site|jamais|multi": 8,
         "via_site|jamais|ss": 7,
         "via_site|jamais|uniq": 23
       },
       "rates": {
         "canal": {
           "via_site": {
-            "n": 90,
-            "touched": 90,
-            "classe": 77
+            "n": 92,
+            "touched": 92,
+            "classe": 79
           },
           "capytale_direct": {
-            "n": 133,
-            "touched": 133,
-            "classe": 99
+            "n": 131,
+            "touched": 131,
+            "classe": 97
           }
         },
         "formation": {
@@ -143,16 +142,15 @@
       "xtab": {
         "capytale_direct|forme|multi": 3,
         "capytale_direct|forme|ss": 1,
-        "capytale_direct|forme|uniq": 1,
-        "capytale_direct|jamais|multi": 25,
+        "capytale_direct|jamais|multi": 24,
         "capytale_direct|jamais|ss": 33,
         "capytale_direct|jamais|test": 23,
         "capytale_direct|jamais|uniq": 70,
         "via_site|forme|multi": 24,
         "via_site|forme|ss": 6,
         "via_site|forme|test": 9,
-        "via_site|forme|uniq": 23,
-        "via_site|jamais|multi": 7,
+        "via_site|forme|uniq": 24,
+        "via_site|jamais|multi": 8,
         "via_site|jamais|ss": 7,
         "via_site|jamais|test": 5,
         "via_site|jamais|uniq": 23
@@ -160,14 +158,14 @@
       "rates": {
         "canal": {
           "via_site": {
-            "n": 104,
-            "touched": 90,
-            "classe": 77
+            "n": 106,
+            "touched": 92,
+            "classe": 79
           },
           "capytale_direct": {
-            "n": 156,
-            "touched": 133,
-            "classe": 99
+            "n": 154,
+            "touched": 131,
+            "classe": 97
           }
         },
         "formation": {
@@ -210,15 +208,15 @@
       },
       "motrice": {
         "k": 22,
-        "n": 47
+        "n": 48
       },
       "via_forme": {
         "k": 22,
-        "n": 47
+        "n": 48
       },
       "via_jamais": {
-        "k": 7,
-        "n": 30
+        "k": 8,
+        "n": 31
       }
     },
     "reach": {

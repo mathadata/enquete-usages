@@ -1,12 +1,19 @@
 {
- "n_matches": 75,
+ "n_matches": 70,
  "by_conf": {
-  "A": 53,
-  "B": 22
+  "A": 46,
+  "B": 24
  },
+ "by_signal": {
+  "E": 34,
+  "D": 17,
+  "B": 10,
+  "A": 9
+ },
+ "excluded_signalA_multicollege": 10,
  "pioneer_uai_has_site_account": true,
  "pioneer_site_accounts_haubourdin": 1,
  "site_clickers_with_uai": 280,
- "matched_share_of_clickers": 26.8,
+ "matched_share_of_clickers": 25.0,
  "n_uai_1to1": 26
 }

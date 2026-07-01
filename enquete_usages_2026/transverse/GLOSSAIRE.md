@@ -24,7 +24,7 @@ Deux sources **disjointes**, sans clé commune directe :
 
 Le seul pont direct : un **clic nominatif** sur le site (`consultation_rss` / `events`
 `web/b/<id>`) → une **activité Capytale datée** (`<id> == mathadata_id`). Mais le clonage ENT
-en aval reste anonyme. D'où l'**appariement individuel inféré** (signaux A/B/D/E, 75 paires).
+en aval reste anonyme. D'où l'**appariement individuel inféré** (signaux A/B/D/E, 70 paires).
 
 **Conséquence cardinale** : selon la variable, le « sujet » est observé dans un monde, l'autre, ou
 les deux. Chaque définition ci-dessous précise **dans quel monde elle est mesurée** et son **statut**
@@ -188,7 +188,7 @@ canonique** ; **chaque monde n'en mesure que la portion qu'il observe** (mondes 
   vus uniquement en formation** (stagiaires, ~140) et le **funnel site** sont ailleurs (ci-dessous).
 - **côté site** (niveaux **0–1** : dormant / intention) : population des **2 715 comptes
   mathadata.fr**, mesurée dans la **matrice « porte × profondeur »** du Volet 2 (`site-vers-classe`),
-  **pas** dans `profiles_teacher`. Les deux mondes ne se recouvrent que via l'appariement (75 paires).
+  **pas** dans `profiles_teacher`. Les deux mondes ne se recouvrent que via l'appariement (70 paires).
 
 Autrement dit : **il n'existe pas une table unique listant les 0-5 pour une population unique** —
 c'est la conséquence directe des deux mondes disjoints. Un prof apparié est positionné au plus haut
@@ -316,17 +316,24 @@ Les variables canoniques se croisent systématiquement avec :
 
 ## 10. Appariement individuel site ↔ Capytale (signaux, rappel)
 
-Confiance signalée. **75 paires** (53 A, 22 B). Sert à déterminer le canal et la formation au grain
+Confiance signalée. **70 paires** (46 A, 24 B). Sert à déterminer le canal et la formation au grain
 individu (sinon : trace établissement).
 
-- **A (haute)** : un user site a cliqué l'activité A à T ; **un seul** compte Capytale `role=teacher` a
-  cloné A à `uai_teach == UAI_user` dans `[T-2j, T+60j]`.
-- **B (moyenne)** : UAI **1:1** (exactement 1 compte site et 1 compte Capytale-teacher sur cet UAI).
-- **D (déploiement)** : récupère les profs « plongée directe » sans clone-test (59 %). Prof réel =
-  MD5 `teacher` ayant des élèves ; si un UAI a **1 prof réel et 1 seul compte site ayant cliqué** →
-  apparié (A si l'activité recoupe, sinon B).
-- **E (déploiement-activité)** : à un UAI multi-comptes, si **une activité** n'a qu'**un** prof réel
+- **A (auto-test)** : un user site a cliqué l'activité A à T ; **un seul** compte Capytale `role=teacher`
+  a **auto-testé** A à `uai_teach == UAI_user` dans `[T-2j, T+60j]`.
+- **D (déploiement, mono-prof)** : récupère les profs « plongée directe » sans clone-test (59 %). Prof
+  réel = MD5 `teacher` ayant des élèves ; si un UAI a **1 prof réel et 1 seul compte site ayant cliqué**
+  → apparié (A si l'activité recoupe, sinon B).
+- **E (déploiement × activité)** : à un UAI multi-comptes, si **une activité** n'a qu'**un** prof réel
   l'ayant déployée et **un** compte site l'ayant cliquée (déploiement après clic) → apparié.
+- **B (UAI 1:1)** : exactement 1 compte site et 1 compte Capytale-auto-testeur sur cet UAI.
+
+> ⚠️ **Priorité (correctif fiabilité, 2026-07-01)** : le clic mène à la page CLONER→PARTAGER aux élèves
+> (déploiement `role=student`), pas à l'auto-test. Le **déploiement épouse le geste réel** ; l'auto-test
+> n'est fiable qu'à établissement mono-prof (sinon l'auto-testeur est souvent un **collègue**). D'où :
+> priorité **E < D < A < B** (déploiement d'abord), et **exclusion** des paires signal-A à établissement
+> **multi-collègues** (≥2 profs déployeurs) — elles retombent en `proxy_etab` côté `build_profiles`
+> (attribution écologique de groupe, **jamais nominative**), plutôt qu'en fausse paire 1:1 entre collègues.
 
 ---
 

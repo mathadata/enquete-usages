@@ -43,7 +43,7 @@ Deux sources **disjointes**, sans clé commune directe :
   « pas d'intérêt »).
 
 Le pont : un clic site `web/b/<id>` → `<id> == mathadata_id` Capytale. Sinon, **appariement
-individuel inféré** (signaux A/B/D/E, 75 paires) + **trace établissement**. Tout ce qui relie les deux
+individuel inféré** (signaux A/B/D/E, 70 paires) + **trace établissement**. Tout ce qui relie les deux
 mondes est **estimé**, jamais mesuré — le dire explicitement.
 
 Source complémentaire **URLR** : statistiques anonymes agrégées des liens courts vers les activités

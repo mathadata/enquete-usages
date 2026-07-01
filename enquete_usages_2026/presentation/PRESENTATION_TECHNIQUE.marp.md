@@ -278,7 +278,7 @@ Séance = run maximal de clones <b>ÉLÈVES</b> de même <code>(teacher, mathada
 <div class="box blue" style="min-width:300px"><b>176</b><span>atteignent une classe (niveau ≥ 4)</span></div>
 </div>
 
-Barreaux **exclusifs** : chaque prof-année tombe dans un seul. Les deux mondes ne se recouvrent que par l'appariement (75 paires).
+Barreaux **exclusifs** : chaque prof-année tombe dans un seul. Les deux mondes ne se recouvrent que par l'appariement (70 paires).
 
 ---
 
@@ -531,7 +531,7 @@ C'est tout le sens (et la limite) du grain établissement : **« l'établissemen
 <div class="box orange" style="min-width:330px"><b>2 ou plus</b><span>→ ambigu : on n'attribue PAS</span></div>
 </div>
 
-**75 paires** au total — un **bonus illustratif** à confiance signalée. Détail des règles (A/D/E/B) page suivante.
+**70 paires** au total — un **bonus illustratif** à confiance signalée. Détail des règles (A/D/E/B) page suivante.
 
 ---
 
@@ -589,7 +589,7 @@ role=teacher  teacher=X(formateur)  student=Y(stagiaire)  uai_teach=<X>  uai_el=
 </div>
 </div>
 
-**Combinaison** par priorité croissante **A (0) < D/E (1) < B (2)** ; on garde **1 site ↔ 1 Capytale**.
+**Combinaison** par priorité croissante **E (0) < D (1) < A (2) < B (3)** — le **déploiement** (E/D) avant l'**auto-test** (A) ; les signal-A à établissement **multi-collègues sont écartés** (→ proxy_etab). On garde **1 site ↔ 1 Capytale**.
 
 ---
 
@@ -862,7 +862,7 @@ La conversion « formation→classe » exige l'UAI. Or **la couverture est inver
 ## Les limites honnêtes (les drapeaux assumés)
 
 <div class="row">
-<div class="box orange" style="min-width:215px"><b>13/75</b><span>ont cloné AVANT de cliquer le site → « site→classe » inversé (canal de retour)</span></div>
+<div class="box orange" style="min-width:215px"><b>13/70</b><span>ont un usage Capytale AVANT le contact site → « site→classe » inversé (canal de retour)</span></div>
 <div class="box orange" style="min-width:215px"><b>2 UAI</b><span>portent 2 comptes Capytale → étab certain, bon prof non</span></div>
 <div class="box orange" style="min-width:215px"><b>conf. B</b><span>UAI 1:1 sans timing → faux positifs (petits collèges)</span></div>
 </div>
@@ -948,7 +948,7 @@ La conversion « formation→classe » exige l'UAI. Or **la couverture est inver
 | Mesurer l'effet formation au grain **établissement** | Affirmer « tel prof = telle personne » avec certitude |
 | Reconstituer **les deux portes** (site vs Capytale-direct) | Un **taux de conversion** site → classe individuel |
 | Figer le **canal** & **timer la formation** des profils | Attribuer une salve URLR à un prof (sauf copie + A/B) |
-| **Illustrer** le pipeline par des cas réels | Extrapoler les 75 paires en population |
+| **Illustrer** le pipeline par des cas réels | Extrapoler les 70 paires en population |
 
 <div class="lim">
 

@@ -21,7 +21,7 @@ escalier 0-5 par prof×année  ──►  max_level  ──►  37 / 47 / 117 / 
    │
 rétention (Y = années où niveau≥4)  ──►  cohorte éligible 77, retour 33,8 %
    │
-classify(prof) :  75 paires (match_individuals.py : signaux A/D/E/B)
+classify(prof) :  70 paires (match_individuals.py : signaux A/D/E/B)
                   + dates site (createdAt, first_cap, fdate)
                   + first_use (ancre = 1ʳᵉ apparition Capytale)
         (a) apparié 1:1            → canal_source 'individuel'   (74)
@@ -111,11 +111,11 @@ censored = |Y| == 1 ET cette année == "2025-2026"   # ne peut pas encore reveni
 
 C'est le cœur de la page Flux, et **il y a deux couches** distinctes.
 
-### Couche 1 — produire les 75 paires (en amont : `match_individuals.py`)
+### Couche 1 — produire les 70 paires (en amont : `match_individuals.py`)
 
 Les signaux **A / D / E / B** tournent **avant** `build_profiles` et écrivent
-`site-vers-classe/data/match_candidates.csv` : **75 lignes** reliant un compte Capytale (`md5[:8]`) à un
-compte site (`S####`). Rappel des signaux (du + fort au + faible, cf. glossaire §10) :
+`site-vers-classe/data/match_candidates.csv` : **70 lignes** reliant un compte Capytale (`md5[:8]`) à un
+compte site (`S####`). Rappel des signaux (cf. glossaire §10) :
 
 - **A** (timing) : un user site clique l'activité *A* à *T* ; **un seul** compte Capytale `role=teacher`
   a cloné *A* au **même UAI** dans `[T−2j, T+60j]`.
@@ -126,11 +126,15 @@ compte site (`S####`). Rappel des signaux (du + fort au + faible, cf. glossaire 
   cliqueur → désambiguïse.
 - **B** (UAI 1:1) : exactement 1 compte site et 1 compte Capytale-`teacher` sur l'UAI.
 
-Combinaison par priorité **A (0) < D/E (1) < B (2)**, 1 site ↔ 1 Capytale. Résultat : **75 paires**
-(53 A + 22 B). `build_profiles` **ne refait pas** l'appariement, il le **consomme** (ligne ~160) :
+Combinaison par priorité **E (0) < D (1) < A (2) < B (3)** — le **déploiement** (E/D, `role=student`)
+passe avant l'**auto-test** (A, `role=teacher`), car le clic mène à cloner→partager, pas à s'auto-tester.
+On **écarte** en plus les paires signal-A à établissement **multi-collègues** (≥2 profs déployeurs : l'auto-
+testeur y est souvent un collègue → renvoi en `proxy_etab`). 1 site ↔ 1 Capytale. Résultat : **70 paires**
+(46 A + 24 B ; par signal : E=34, D=17, A=9, B=10 ; 10 signal-A écartés). `build_profiles` **ne refait pas**
+l'appariement, il le **consomme** (ligne ~160) :
 
 ```python
-matched = { cap_acc[:8] : {statut, ftype, site_code} }   # les 75 paires
+matched = { cap_acc[:8] : {statut, ftype, site_code} }   # les 70 paires
 ```
 
 ### Couche 2 — décider canal + formation pour CHACUN des 260 — `classify()` ligne ~188

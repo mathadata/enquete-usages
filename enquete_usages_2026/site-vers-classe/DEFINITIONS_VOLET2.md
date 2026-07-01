@@ -69,7 +69,8 @@ Résoudre `users.trainedFormation` → `formation-codes.id` → type/date/label 
   - **B (moyenne)** : UAI **1:1** (exactement 1 compte site et 1 compte Capytale-teacher sur cet UAI).
   - **D (déploiement)** : récupère les profs « plongée directe » sans clone-test (59 % des profs). Prof réel = MD5 `teacher` ayant des élèves ; si un UAI a **exactement 1 prof réel et 1 seul compte site ayant cliqué** une activité Capytale → apparié (A si l'activité cliquée recoupe une activité déployée, sinon B). Sans ce signal, A/B (basés sur `role=teacher`) rataient tous les plongeurs-directs.
   - **E (déploiement-activité)** : à un UAI multi-comptes, si **une activité** n'a qu'**un seul** prof réel l'ayant déployée et **un seul** compte site l'ayant cliquée (déploiement après le clic), on apparie. Désambiguïse là où D ne tranche pas.
-  - **75 paires** (53 A, 22 B), calibrées sur le hub fondateur (Haubourdin) et les UAI 1:1.
+  - **70 paires** (46 A, 24 B), calibrées sur le hub fondateur (Haubourdin) et les UAI 1:1. Priorité au
+    **déploiement** (E/D) sur l'auto-test (A) ; signal-A à établissement multi-collègues **écarté** (→ proxy_etab).
 
 ## Chiffres-clés (cf. facts_cross.json, à la date d'extraction)
 - Funnel (chiffres **analysés**, = `facts_cross.json`) : **2715** comptes → **1712** complets → **631** formés → **337** ont cliqué vers Capytale → (Volet 1) 224 ont enseigné / 5854 élèves. *(Bruts avant exclusion des 9 comptes équipe : 2724 / 1721 / 638.)* ⚠️ Marches **non strictement emboîtées** : 188 des 631 formés sont restés newsletter-only → ne pas chaîner 1712 → 631.

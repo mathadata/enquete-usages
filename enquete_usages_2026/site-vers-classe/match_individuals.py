@@ -3,11 +3,22 @@
 VOLET 2 (bonus) — appariement individuel site (nominatif) <-> compte Capytale (anonyme).
 Strategie : aucun identifiant commun -> inference par (UAI + activite + timing clic->clone).
 
-Signaux, du + fort au + faible :
-  A (haute)   : un user site a clique l'activite A a l'instant T ; il existe UN SEUL compte
-                Capytale role=teacher ayant clone A a uai_teach == UAI_user dans [T-2j, T+60j].
-  B (moyenne) : UAI 1:1 -> exactement 1 compte site ET 1 compte Capytale-teacher sur cet UAI.
-  C (faible)  : UAI partage (plusieurs candidats d'un cote) -> ambigu, on liste sans trancher.
+Signaux (4) :
+  A : timing clic->AUTO-TEST. Un user site a clique l'activite A a T ; UN SEUL compte Capytale
+      role=teacher a auto-teste A a uai_teach == UAI_user dans [T-2j, T+60j].
+  D : DEPLOIEMENT, etablissement mono-prof. UAI a EXACTEMENT 1 prof reel (role=student) ET 1
+      cliqueur site -> apparie (conf A si l'activite cliquee recoupe une activite deployee, sinon B).
+  E : DEPLOIEMENT, activite discriminante. Pour (UAI, activite) : UN SEUL prof l'a deployee ET UN
+      SEUL compte site l'a cliquee (deploiement apres clic) -> apparie (conf A).
+  B : UAI 1:1 -> exactement 1 compte site ET 1 compte Capytale-auto-testeur sur cet UAI (conf B).
+
+PRIORITE (correctif fiabilite) : DEPLOIEMENT (E, D) > AUTO-TEST (A) > etablissement (B).
+Motif : le clic site mene a la page CLONER->PARTAGER aux eleves (deploiement role=student), pas a
+l'auto-test (role=teacher, geste optionnel et souvent le fait d'un COLLEGUE). Le deploiement epouse
+donc le geste reel ; l'auto-test n'est fiable qu'a etablissement mono-prof. On PREFERE E/D a A, et
+on ECARTE les paires signal-A a etablissement MULTI-COLLEGUES (>=2 profs deployeurs) : elles
+retombent en `proxy_etab` cote build_profiles (attribution ecologique de groupe, jamais nominative)
+plutot qu'en fausse paire 1:1 (cf. faux positifs entre collegues).
 
 Calibration : pionnier (Haubourdin 0590093F) + etablissements 1:1.
 Sortie : pseudonymisee (user site = code S####, compte Capytale = md5[:8]). Mapping en SCRATCH.
@@ -75,7 +86,7 @@ for r in CK[CK['uai']!=''].itertuples():
     if len(inwin)==1:
         acc=next(iter(inwin))
         matchesA.append(dict(site_id=r.site_id, cap_acc=acc, uai=r.uai, mid=r.mid,
-            click=r.t, conf='A', prio=0))
+            click=r.t, conf='A', prio=2, sig='A'))   # prio=2 : auto-test derrière le déploiement (E/D)
 A=pd.DataFrame(matchesA)
 # resoudre : un site_id peut matcher plusieurs activites -> garder paires uniques (site,cap)
 if len(A): A=A.sort_values('click').drop_duplicates(['site_id','cap_acc'])
@@ -90,7 +101,7 @@ matchesB=[]
 for uai in set(site_acc_by_uai)&set(cap_acc_by_uai):
     ss=site_acc_by_uai[uai]; cc=cap_acc_by_uai[uai]
     if len(ss)==1 and len(cc)==1:
-        matchesB.append(dict(site_id=next(iter(ss)), cap_acc=next(iter(cc)), uai=uai, mid='', click=pd.NaT, conf='B', prio=2))
+        matchesB.append(dict(site_id=next(iter(ss)), cap_acc=next(iter(cc)), uai=uai, mid='', click=pd.NaT, conf='B', prio=3, sig='B'))
 B=pd.DataFrame(matchesB)
 
 # ---- D : déploiement direct (récupère les profs SANS clone-test, ex. « plongée directe ») ----
@@ -115,7 +126,7 @@ for uai,teachers in real_teach_by_uai.items():
         tid=next(iter(teachers)); sid=next(iter(clickers))
         corrob=bool(clicked_acts_site.get(sid,set()) & deployed_acts.get((uai,tid),set()))
         matchesD.append(dict(site_id=sid, cap_acc=tid, uai=uai, mid='', click=pd.NaT,
-            conf=('A' if corrob else 'B'), prio=1))
+            conf=('A' if corrob else 'B'), prio=1, sig='D'))
 D=pd.DataFrame(matchesD)
 
 # ---- E : (UAI, activité) unique des DEUX côtés — désambiguïse les UAI multi-comptes ----
@@ -138,14 +149,21 @@ for key,teach_d in dep_t.items():
     if not clk_d or len(teach_d)!=1 or len(clk_d)!=1: continue
     tid,ddt=next(iter(teach_d.items())); sid,cdt=next(iter(clk_d.items()))
     if (cdt-WINP)<=ddt<=(cdt+WINPOST):
-        matchesE.append(dict(site_id=sid, cap_acc=tid, uai=key[0], mid=key[1], click=cdt, conf='A', prio=1))
+        matchesE.append(dict(site_id=sid, cap_acc=tid, uai=key[0], mid=key[1], click=cdt, conf='A', prio=0, sig='E'))   # prio=0 : déploiement discriminant en tête
 E=pd.DataFrame(matchesE)
 if len(E): E=E.drop_duplicates(['site_id','cap_acc'])
 
-# combine : prio croissant gagne (A timing < D/E déploiement < B uai-1:1) ; 1 site <-> 1 cap
-parts=[df for df in (A,D,E,B) if len(df)]
-allm=pd.concat(parts,ignore_index=True) if parts else pd.DataFrame(columns=['site_id','cap_acc','uai','conf','prio'])
-allm=allm.sort_values('prio').drop_duplicates(['site_id']).drop_duplicates(['cap_acc'])
+# combine : prio croissant gagne — DÉPLOIEMENT (E=0, D=1) > AUTO-TEST (A=2) > établissement (B=3).
+# 1 site <-> 1 cap (dédup stricte, déterministe : tri (prio, sig, site_id) indépendant de PYTHONHASHSEED).
+# (2) ÉCARTER les paires signal-A à établissement multi-collègues (≥2 profs déployeurs, hub PIO exclu) :
+#     un auto-testeur y est souvent un COLLÈGUE, pas le cliqueur → on retire la paire (→ proxy_etab
+#     côté build_profiles) plutôt que d'affirmer une fausse identité individuelle.
+multi_uai={u for u,s in real_teach_by_uai.items() if len(s-{PIO})>=2}
+parts=[df for df in (E,D,A,B) if len(df)]
+allm=pd.concat(parts,ignore_index=True) if parts else pd.DataFrame(columns=['site_id','cap_acc','uai','conf','prio','sig'])
+_excl_A_multi=allm[(allm['sig']=='A') & (allm['uai'].isin(multi_uai))].copy()   # écartées (audit)
+allm=allm[~((allm['sig']=='A') & (allm['uai'].isin(multi_uai)))].copy()
+allm=allm.sort_values(['prio','sig','site_id']).drop_duplicates(['site_id']).drop_duplicates(['cap_acc'])
 
 # ---- pseudonymisation ----
 site_codes={sid:f"S{idx:04d}" for idx,sid in enumerate(sorted(set(allm['site_id'])))}
@@ -171,6 +189,9 @@ pd.DataFrame(nominatif).to_csv(f"{SCRATCH}/match_nominatif.csv",index=False)
 # ---- calibration / validation ----
 val={}
 val['n_matches']=int(len(M)); val['by_conf']={k:int(v) for k,v in M['conf'].value_counts().items()}
+# provenance par signal (E/D = déploiement fiable ; A = auto-test ; B = établissement) + écartés (2)
+val['by_signal']={k:int(v) for k,v in allm['sig'].value_counts().items()}
+val['excluded_signalA_multicollege']=int(len(_excl_A_multi))   # signal-A à UAI ≥2 profs → renvoyés en proxy_etab
 # pionnier
 val['pioneer_uai_has_site_account']=bool(len([u for u,i in users.items() if (i.get('uai')=='0590093F' and u not in excl)]))
 val['pioneer_site_accounts_haubourdin']=int(len([u for u,i in users.items() if (i.get('uai')=='0590093F' and u not in excl)]))
