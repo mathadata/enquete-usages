@@ -1462,5 +1462,6 @@
     }
    ]
   }
- ]
+ ],
+ "_stale_note": "Artefact one-shot antérieur au correctif d'appariement 2026-07-01 : chiffres individuels calculés sur 46 paires (désormais 70 : 46 A / 24 B). Régénérer via workflow_volet2.js."
 }

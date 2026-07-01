@@ -1,3 +1,5 @@
+> ⚠️ **Artefact one-shot antérieur au correctif d'appariement du 2026-07-01.** Calculé sur **46 paires** (avant priorité déploiement E/D et exclusion des signal-A multi-collègues) ; l'appariement canonique est désormais **70 paires** (46 A / 24 B). Les chiffres **individuels** ci-dessous sont **périmés** — régénérer via `workflow_volet2.js` (cf. `GLOSSAIRE.md` §10). Le grain établissement/cohorte du volet principal n'est pas affecté.
+
 # Les deux portes : site-first vs Capytale-direct  [verdict: solide]
 
 ## Deux populations qui ne se recouvrent presque pas
